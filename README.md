@@ -21,7 +21,7 @@ Interactive multiple-choice practice website for the **IBM Certified Quantum Com
 
 ## Live Site
 
-Hosted via GitHub Pages. Access at: `https://<owner>.github.io/<repo>/`
+Hosted via GitHub Pages. Access at: `https://ferasshita.github.io/qiskit-certificate-practice/`
 
 ## Local Development
 
