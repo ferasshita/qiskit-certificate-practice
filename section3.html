@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 3 – Advanced Circuit Construction | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 3</div>
+      <h1>Advanced Circuit Construction &amp; Transpilation</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 20 Questions</span>
+        <span>&#x23F1; ~20 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 20 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 20</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "How do you define a single parameter named \"theta\" to be used in a gate rotation?",
+        options: [
+          "<code>theta = Parameter('theta')</code>",
+          "<code>theta = Qiskit.Variable('theta')</code>",
+          "<code>theta = qc.add_parameter('theta')</code>",
+          "<code>theta = Symbol('theta')</code>"
+        ],
+        answer: 0,
+        explanation: "<code>Parameter</code> is imported from <code>qiskit.circuit</code>."
+      },
+      {
+        text: "Given a <code>ParameterVector</code> named <code>p</code> of length 3, how do you apply the second element as a rotation to the first qubit?",
+        options: [
+          "<code>qc.rx(p[2], 0)</code>",
+          "<code>qc.rx(p(1), 0)</code>",
+          "<code>qc.rx(p[1], 0)</code>",
+          "<code>qc.rx(p.get(1), 0)</code>"
+        ],
+        answer: 2,
+        explanation: "<code>ParameterVector</code> is 0-indexed; <code>p[1]</code> is the second element."
+      },
+      {
+        text: "Which method is used to replace all parameters in a circuit with numerical values, returning a new circuit?",
+        options: [
+          "<code>qc.bind_parameters({theta: 0.5})</code>",
+          "<code>qc.assign_parameters({theta: 0.5})</code>",
+          "<code>qc.fix_parameters({theta: 0.5})</code>",
+          "<code>qc.evaluate({theta: 0.5})</code>"
+        ],
+        answer: 1,
+        explanation: "<code>assign_parameters</code> is the standard method; <code>bind_parameters</code> is deprecated in newer versions."
+      },
+      {
+        text: "What is the correct syntax for a dynamic circuit \"if\" condition in Qiskit v2.x (using a classical register <code>cr</code>)?",
+        options: [
+          "<code>with qc.if_test((cr, 1)):</code>",
+          "<code>qc.if_then(cr == 1):</code>",
+          "<code>if qc.measure(0) == 1:</code>",
+          "<code>qc.c_if(cr, 1)</code>"
+        ],
+        answer: 0,
+        explanation: "Qiskit v2.x uses the <code>with</code> block syntax for OpenQASM 3 dynamic features."
+      },
+      {
+        text: "In a dynamic circuit, which instruction allows a block of gates to repeat until a specific classical condition is met?",
+        options: [
+          "<code>qc.repeat_until_success()</code>",
+          "<code>with qc.while_loop((cr, 0)):</code>",
+          "<code>qc.do_while(cr == 0)</code>",
+          "<code>qc.for_loop(range(10))</code>"
+        ],
+        answer: 1,
+        explanation: "<code>while_loop</code> is a core dynamic construct for iterative algorithms."
+      },
+      {
+        text: "Which function is used to convert a high-level <code>QuantumCircuit</code> into a circuit optimized for a specific backend's coupling map and basis gates?",
+        options: [
+          "<code>execute()</code>",
+          "<code>compile()</code>",
+          "<code>transpile()</code>",
+          "<code>assemble()</code>"
+        ],
+        answer: 2,
+        explanation: "<code>transpile</code> prepares the circuit for hardware execution."
+      },
+      {
+        text: "What does <code>optimization_level=3</code> signify in the transpiler?",
+        options: [
+          "No optimization; only mapping to hardware.",
+          "Light optimization, including adjacent gate merging.",
+          "Heavy optimization, including noise-adaptive layout and resynthesis.",
+          "The circuit is transpiled for 3 different backends simultaneously."
+        ],
+        answer: 2,
+        explanation: "Level 3 is the highest pre-set optimization level."
+      },
+      {
+        text: "If a backend only supports $[cx, id, rz, sx, x]$, what will the transpiler do to an $H$ gate in your circuit?",
+        options: [
+          "It will raise an error because $H$ is not in the basis.",
+          "It will skip the gate.",
+          "It will decompose the $H$ gate into a sequence of $rz$ and $sx$ gates.",
+          "It will replace $H$ with a $CX$ gate."
+        ],
+        answer: 2,
+        explanation: "The transpiler uses synthesis passes to translate non-native gates."
+      },
+      {
+        text: "The <code>coupling_map</code> argument in the transpiler defines:",
+        options: [
+          "The duration of each gate.",
+          "The connectivity of the physical qubits (which pairs can perform two-qubit gates).",
+          "The error rates of the qubits.",
+          "The classical communication latency."
+        ],
+        answer: 1,
+        explanation: "The coupling map is a graph of physical connectivity."
+      },
+      {
+        text: "Which transpiler pass is responsible for mapping virtual qubits to physical qubits?",
+        options: [
+          "<code>OptimizationPass</code>",
+          "<code>LayoutPass</code>",
+          "<code>RoutingPass</code>",
+          "<code>SynthesisPass</code>"
+        ],
+        answer: 1,
+        explanation: "The layout pass decides the initial mapping; routing adds SWAPs later."
+      },
+      {
+        text: "What is the result of <code>qc.assign_parameters(param_dict, inplace=True)</code>?",
+        options: [
+          "It returns a copy of the circuit with parameters bound.",
+          "It modifies the existing circuit object directly.",
+          "It creates a parameter binding table without changing the gates.",
+          "It converts the circuit into a <code>Schedule</code>."
+        ],
+        answer: 1,
+        explanation: "<code>inplace=True</code> prevents the creation of a new circuit object."
+      },
+      {
+        text: "When using <code>qc.initialize([0, 1], 0)</code>, what happens to the target qubit?",
+        options: [
+          "It is flipped using an $X$ gate.",
+          "It is set to the state $|1\\rangle$ regardless of its previous state, often using a reset and gates.",
+          "It remains unchanged if it was already $|1\\rangle$.",
+          "It is measured and then flipped."
+        ],
+        answer: 1,
+        explanation: "<code>initialize</code> is a \"heavy\" instruction that forces a specific state."
+      },
+      {
+        text: "To manually specify which physical qubits should represent your virtual qubits 0 and 1, you use:",
+        options: [
+          "<code>initial_layout=[2, 5]</code>",
+          "<code>qubit_map={0: 2, 1: 5}</code>",
+          "<code>physical_qubits=[2, 5]</code>",
+          "<code>set_layout(2, 5)</code>"
+        ],
+        answer: 0,
+        explanation: "<code>initial_layout</code> accepts a list where the index is the virtual qubit and the value is the physical one."
+      },
+      {
+        text: "Which method allows you to include a raw unitary matrix as a gate in a circuit?",
+        options: [
+          "<code>qc.add_matrix(matrix)</code>",
+          "<code>qc.unitary(matrix, [0, 1])</code>",
+          "<code>qc.append(UnitaryGate(matrix))</code>",
+          "Both B and C are valid."
+        ],
+        answer: 3,
+        explanation: "<code>qc.unitary</code> is a convenience wrapper for <code>UnitaryGate</code>."
+      },
+      {
+        text: "In dynamic circuits, what does the <code>break_loop()</code> instruction do?",
+        options: [
+          "It crashes the quantum program.",
+          "It exits the current <code>while_loop</code> or <code>for_loop</code> immediately.",
+          "It pauses execution for a classical trigger.",
+          "It resets the classical register."
+        ],
+        answer: 1,
+        explanation: "Standard loop control flow, now available in quantum circuits."
+      },
+      {
+        text: "What is the primary purpose of the <code>PassManager</code>?",
+        options: [
+          "To manage user access to the IBM Quantum Platform.",
+          "To define a custom sequence of transpilation stages and optimizations.",
+          "To store measurement results from multiple shots.",
+          "To handle the queue system of a backend."
+        ],
+        answer: 1,
+        explanation: "<code>PassManager</code> allows granular control over the transpilation pipeline."
+      },
+      {
+        text: "If you have a <code>Parameter</code> $\\phi$, how do you apply a rotation of $2\\phi$?",
+        options: [
+          "<code>qc.rz(phi * 2, 0)</code>",
+          "<code>qc.rz(2 * phi, 0)</code>",
+          "<code>qc.rz(phi.assign(phi * 2), 0)</code>",
+          "Both A and B are valid expressions in Qiskit."
+        ],
+        answer: 3,
+        explanation: "Qiskit parameters support basic arithmetic to create <code>ParameterExpression</code> objects."
+      },
+      {
+        text: "Which argument in <code>transpile</code> helps reduce the gate count by merging multi-qubit blocks?",
+        options: [
+          "<code>approximation_degree</code>",
+          "<code>basis_gates</code>",
+          "<code>optimization_level</code>",
+          "<code>routing_method</code>"
+        ],
+        answer: 2,
+        explanation: "Higher optimization levels prioritize gate count reduction."
+      },
+      {
+        text: "What is a \"virtual qubit\"?",
+        options: [
+          "A qubit that exists only on a simulator.",
+          "An abstract qubit used in circuit design before mapping to physical hardware.",
+          "A classical bit acting as a qubit.",
+          "A qubit that has decohered."
+        ],
+        answer: 1,
+        explanation: "Virtual qubits are the logical indices used in the <code>QuantumCircuit</code> object."
+      },
+      {
+        text: "Which of the following correctly creates a 2-qubit register named \"q_reg\"?",
+        options: [
+          "<code>q_reg = QuantumRegister(2, 'q_reg')</code>",
+          "<code>q_reg = Qiskit.Register(2, name='q_reg')</code>",
+          "<code>q_reg = qc.add_register(2)</code>",
+          "<code>q_reg = Register(qubits=2)</code>"
+        ],
+        answer: 0,
+        explanation: "<code>QuantumRegister</code> is the class used to define named groups of qubits."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>
