@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 1 – Pauli Operators | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 1</div>
+      <h1>Pauli Operators &amp; Quantum Operations</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 20 Questions</span>
+        <span>&#x23F1; ~15 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 20 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 20</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "Which of the following represents the matrix form of the Pauli-X operator?",
+        options: [
+          "$\\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\end{pmatrix}$",
+          "$\\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}$",
+          "$\\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix}$",
+          "$\\begin{pmatrix} 0 & -i \\\\ i & 0 \\end{pmatrix}$"
+        ],
+        answer: 1,
+        explanation: "The X gate is the NOT gate, swapping amplitudes of $|0\\rangle$ and $|1\\rangle$."
+      },
+      {
+        text: "What is the result of applying a Pauli-Z gate to the state $|1\\rangle$?",
+        options: [
+          "$|0\\rangle$",
+          "$|1\\rangle$",
+          "$-|1\\rangle$",
+          "$i|1\\rangle$"
+        ],
+        answer: 2,
+        explanation: "$Z|1\\rangle = -|1\\rangle$. It flips the phase of the $|1\\rangle$ component."
+      },
+      {
+        text: "The Pauli-Y operator can be expressed as a combination of which other operators?",
+        options: [
+          "$iXZ$",
+          "$iZX$",
+          "$-iXZ$",
+          "$XY$"
+        ],
+        answer: 1,
+        explanation: "By convention, $Y = iXZ$ is often cited, but the strict algebraic relation is $iZX$."
+      },
+      {
+        text: "What are the eigenvalues of any Pauli operator ($X$, $Y$, or $Z$)?",
+        options: [
+          "$0$ and $1$",
+          "$1$ and $-1$",
+          "$i$ and $-i$",
+          "$1$ and $i$"
+        ],
+        answer: 1,
+        explanation: "All Pauli matrices are Hermitian and unitary with eigenvalues $\\pm 1$."
+      },
+      {
+        text: "Which Qiskit code snippet correctly applies a Pauli-Z gate to the first qubit of a <code>QuantumCircuit</code> named <code>qc</code>?",
+        options: [
+          "<code>qc.pauli_z(0)</code>",
+          "<code>qc.z(0)</code>",
+          "<code>qc.apply(Z, 0)</code>",
+          "<code>qc.gate('z', 0)</code>"
+        ],
+        answer: 1,
+        explanation: "<code>qc.z(qubit_index)</code> is the standard Qiskit method."
+      },
+      {
+        text: "If a qubit is in the state $|+\\rangle$, what is the resulting state after applying a Pauli-Z gate?",
+        options: [
+          "$|+\\rangle$",
+          "$|-\\rangle$",
+          "$|0\\rangle$",
+          "$|1\\rangle$"
+        ],
+        answer: 1,
+        explanation: "$Z$ maps $\\frac{1}{\\sqrt{2}}(|0\\rangle + |1\\rangle)$ to $\\frac{1}{\\sqrt{2}}(|0\\rangle - |1\\rangle) = |-\\rangle$."
+      },
+      {
+        text: "Which Pauli operator acts as a bit-flip?",
+        options: ["$X$", "$Y$", "$Z$", "$I$"],
+        answer: 0,
+        explanation: "$X|0\\rangle = |1\\rangle$ and $X|1\\rangle = |0\\rangle$."
+      },
+      {
+        text: "Which Pauli operator acts as a phase-flip?",
+        options: ["$X$", "$Y$", "$Z$", "$I$"],
+        answer: 2,
+        explanation: "$Z$ leaves $|0\\rangle$ unchanged but flips the sign of $|1\\rangle$."
+      },
+      {
+        text: "What is the effect of applying the sequence $XX$ to any single-qubit state $|\\psi\\rangle$?",
+        options: [
+          "The state becomes $-|\\psi\\rangle$",
+          "The state becomes $|0\\rangle$",
+          "The state remains $|\\psi\\rangle$",
+          "The state becomes $|1\\rangle$"
+        ],
+        answer: 2,
+        explanation: "Pauli operators are self-inverse: $X^2 = I,\\; Y^2 = I,\\; Z^2 = I$."
+      },
+      {
+        text: "In Qiskit, what is the default initial state of a qubit in a <code>QuantumCircuit</code>?",
+        options: [
+          "$|+\\rangle$",
+          "$|1\\rangle$",
+          "$|0\\rangle$",
+          "Random state"
+        ],
+        answer: 2,
+        explanation: "All qubits in Qiskit start in the ground state $|0\\rangle$."
+      },
+      {
+        text: "Which gate is equivalent to applying a Hadamard (H) gate, followed by a Pauli-Z gate, followed by another Hadamard (H) gate?",
+        options: ["$X$", "$Y$", "$S$", "$T$"],
+        answer: 0,
+        explanation: "$HXH = Z$ and $HZH = X$. This is a fundamental basis transformation."
+      },
+      {
+        text: "What is the matrix representation of the Identity ($I$) operator?",
+        options: [
+          "$\\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}$",
+          "$\\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix}$",
+          "$\\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\end{pmatrix}$",
+          "$\\begin{pmatrix} 0 & 0 \\\\ 0 & 0 \\end{pmatrix}$"
+        ],
+        answer: 2,
+        explanation: "Identity leaves the state unchanged."
+      },
+      {
+        text: "To create a rotation of $\\pi/2$ around the y-axis in Qiskit, which command should be used?",
+        options: [
+          "<code>qc.ry(pi/2, 0)</code>",
+          "<code>qc.rotate_y(1.57, 0)</code>",
+          "<code>qc.y(pi/2, 0)</code>",
+          "<code>qc.ry(0, pi/2)</code>"
+        ],
+        answer: 0,
+        explanation: "Rotation gates in Qiskit follow the format <code>gate(angle, qubit)</code>."
+      },
+      {
+        text: "Which of the following is true regarding the $S$ gate?",
+        options: [
+          "It is the square root of the $X$ gate.",
+          "It is the square root of the $Z$ gate.",
+          "It is equivalent to $Z$ applied twice.",
+          "It is a $\\pi/8$ rotation."
+        ],
+        answer: 1,
+        explanation: "$S = \\sqrt{Z} = \\mathrm{diag}(1, i)$."
+      },
+      {
+        text: "If <code>qc.h(0)</code> is followed by <code>qc.cx(0, 1)</code>, what is the resulting state of the two qubits (starting from $|00\\rangle$)?",
+        options: [
+          "$|00\\rangle + |11\\rangle$ (unnormalized)",
+          "$\\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)$",
+          "$\\frac{1}{\\sqrt{2}}(|01\\rangle + |10\\rangle)$",
+          "$|01\\rangle$"
+        ],
+        answer: 1,
+        explanation: "This sequence creates the $\\Phi^+$ Bell state."
+      },
+      {
+        text: "Which operator is represented by the matrix $\\begin{pmatrix} 1 & 0 \\\\ 0 & e^{i\\pi/4} \\end{pmatrix}$?",
+        options: ["$S$ gate", "$T$ gate", "$Z$ gate", "$H$ gate"],
+        answer: 1,
+        explanation: "The T gate is a $\\pi/4$ phase rotation."
+      },
+      {
+        text: "What happens when you apply a Pauli-Y gate to the state $|0\\rangle$?",
+        options: [
+          "$i|1\\rangle$",
+          "$-i|1\\rangle$",
+          "$|1\\rangle$",
+          "$|0\\rangle$"
+        ],
+        answer: 0,
+        explanation: "$Y|0\\rangle = \\begin{pmatrix} 0 & -i \\\\ i & 0 \\end{pmatrix} \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ i \\end{pmatrix} = i|1\\rangle$."
+      },
+      {
+        text: "In Qiskit v2.x, how do you add a multi-controlled X gate with 2 control qubits and 1 target qubit?",
+        options: [
+          "<code>qc.mcx([0, 1], 2)</code>",
+          "<code>qc.ccx(0, 1, 2)</code>",
+          "<code>qc.x(2).control(2)</code>",
+          "Both A and B are valid"
+        ],
+        answer: 3,
+        explanation: "<code>ccx</code> is a specific 3-qubit gate; <code>mcx</code> is a generalized multi-control method. Both are valid in Qiskit."
+      },
+      {
+        text: "Which gate converts the computational basis states to the diagonal basis states ($|+\\rangle$, $|-\\rangle$)?",
+        options: ["$X$", "$Z$", "$H$", "$S$"],
+        answer: 2,
+        explanation: "$H|0\\rangle = |+\\rangle$ and $H|1\\rangle = |-\\rangle$."
+      },
+      {
+        text: "The $T^\\dagger$ (T-dg) gate is the adjoint of the $T$ gate. What is its phase rotation?",
+        options: [
+          "$\\pi/4$",
+          "$-\\pi/4$",
+          "$\\pi/2$",
+          "$-\\pi/2$"
+        ],
+        answer: 1,
+        explanation: "Adjoint ($\\dagger$) indicates a complex conjugate transpose, negating the phase."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>
