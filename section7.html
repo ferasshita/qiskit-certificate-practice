@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 7 – Retrieving and Analyzing Results | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 7</div>
+      <h1>Retrieving and Analyzing Results</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 20 Questions</span>
+        <span>&#x23F1; ~20 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 20 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 20</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "Which class is the primary entry point for retrieving historical job data from IBM Quantum in Qiskit v2.x?",
+        options: [
+          "<code>IBMBackend</code>",
+          "<code>QiskitRuntimeService</code>",
+          "<code>JobManager</code>",
+          "<code>ResultRetriever</code>"
+        ],
+        answer: 1,
+        explanation: "<code>QiskitRuntimeService</code> is the standard manager for all cloud-based interactions in v2.x."
+      },
+      {
+        text: "If you have a unique Job ID, which method should you use to fetch that specific job's object?",
+        options: [
+          "<code>service.get_job('job_id')</code>",
+          "<code>service.job('job_id')</code>",
+          "<code>service.retrieve_job('job_id')</code>",
+          "<code>backend.retrieve('job_id')</code>"
+        ],
+        answer: 1,
+        explanation: "The <code>.job()</code> method is the standard way to retrieve a specific job instance by ID."
+      },
+      {
+        text: "Which of the following is NOT a valid state in the Qiskit Job lifecycle?",
+        options: [
+          "<code>INITIALIZING</code>",
+          "<code>QUEUED</code>",
+          "<code>RUNNING</code>",
+          "<code>DONE</code>"
+        ],
+        answer: 0,
+        explanation: "Valid states include <code>QUEUED</code>, <code>RUNNING</code>, <code>DONE</code>, <code>ERROR</code>, and <code>CANCELLED</code>."
+      },
+      {
+        text: "How can you retrieve a list of the last 10 jobs you submitted to a specific backend?",
+        options: [
+          "<code>service.jobs(limit=10, backend_name='ibm_brisbane')</code>",
+          "<code>service.recent_jobs(10)</code>",
+          "<code>backend.jobs(limit=10)</code>",
+          "<code>service.get_all_jobs(limit=10)</code>"
+        ],
+        answer: 0,
+        explanation: "<code>service.jobs()</code> supports filtering by limit, backend, and date."
+      },
+      {
+        text: "What is the correct way to check the status of a job object named <code>job</code>?",
+        options: [
+          "<code>job.status()</code>",
+          "<code>job.get_status()</code>",
+          "<code>job.state()</code>",
+          "<code>job.check()</code>"
+        ],
+        answer: 0,
+        explanation: "<code>job.status()</code> returns a <code>JobStatus</code> enum or object representing the current state."
+      },
+      {
+        text: "Which method is used to block your Python script until the job finishes and returns the result?",
+        options: [
+          "<code>job.wait()</code>",
+          "<code>job.result()</code>",
+          "<code>job.fetch()</code>",
+          "<code>job.hold()</code>"
+        ],
+        answer: 1,
+        explanation: "<code>.result()</code> is a synchronous call that waits for completion before returning data."
+      },
+      {
+        text: "When using Qiskit Runtime Primitives, what information is contained in the <code>metadata</code> field of a <code>PubResult</code>?",
+        options: [
+          "The full statevector of the qubit.",
+          "Information about the execution, such as shots taken or circuit depth.",
+          "The source code of the Qiskit library.",
+          "The temperature of the dilution refrigerator."
+        ],
+        answer: 1,
+        explanation: "Metadata typically includes execution metrics, not physical hardware telemetry."
+      },
+      {
+        text: "If you lose your internet connection after submitting a job, what happens to the experiment?",
+        options: [
+          "The job is automatically cancelled by the backend.",
+          "The job continues to run on the IBM Quantum hardware and the results are stored in the cloud.",
+          "The job pauses and waits for you to reconnect.",
+          "The results are deleted immediately after the job finishes."
+        ],
+        answer: 1,
+        explanation: "Jobs are handled asynchronously on the server side; your local connection isn't required once submitted."
+      },
+      {
+        text: "How do you filter jobs in <code>service.jobs()</code> to only show those that failed?",
+        options: [
+          "<code>service.jobs(status='ERROR')</code>",
+          "<code>service.jobs(filter='failed')</code>",
+          "<code>service.jobs(job_state='FAIL')</code>",
+          "<code>service.jobs(status='CANCELLED')</code>"
+        ],
+        answer: 0,
+        explanation: "The status filter uses uppercase strings like 'DONE', 'ERROR', or 'CANCELLED'."
+      },
+      {
+        text: "Which tool provides a real-time, text-based progress bar for a running job in the terminal?",
+        options: [
+          "<code>JobWatcher</code>",
+          "<code>job_monitor(job)</code>",
+          "<code>RuntimeProgress</code>",
+          "<code>backend.monitor()</code>"
+        ],
+        answer: 1,
+        explanation: "<code>job_monitor</code> is a utility from <code>qiskit.tools.monitor</code> that prints status updates."
+      },
+      {
+        text: "What is the difference between <code>job.result()</code> and <code>service.job(id).result()</code>?",
+        options: [
+          "There is no difference; both retrieve the same result data.",
+          "<code>job.result()</code> only works for simulators.",
+          "<code>service.job(id)</code> is used to retrieve results from a job submitted in a previous session.",
+          "<code>job.result()</code> returns a dictionary, while the service method returns a list."
+        ],
+        answer: 2,
+        explanation: "Service-based retrieval is used to re-instantiate jobs from different Python sessions."
+      },
+      {
+        text: "When a job's status is <code>QUEUED</code>, how can you find your current position in the line?",
+        options: [
+          "<code>job.queue_position()</code>",
+          "<code>job.status().queue_position</code>",
+          "<code>job.get_priority()</code>",
+          "It is impossible to know the exact position."
+        ],
+        answer: 0,
+        explanation: "<code>job.queue_position()</code> is a method on the job object that returns your current position in the queue."
+      },
+      {
+        text: "In the context of a <code>Session</code>, what happens to the results of jobs if the session times out?",
+        options: [
+          "The results are lost.",
+          "The results of completed jobs remain accessible via their Job IDs.",
+          "The session is automatically extended until you download the data.",
+          "Only the last job's result is saved."
+        ],
+        answer: 1,
+        explanation: "Job data is persistent in the IBM Quantum cloud regardless of session status."
+      },
+      {
+        text: "Which attribute of a <code>SamplerPubResult</code> contains the actual measurement bitstrings?",
+        options: [
+          "<code>result.counts</code>",
+          "<code>result.data.meas.get_bitstrings()</code>",
+          "<code>result.quasi_probs</code>",
+          "<code>result.bit_array</code>"
+        ],
+        answer: 1,
+        explanation: "In V2 Primitives, <code>data</code> is a namespace containing your defined classical register names."
+      },
+      {
+        text: "If a job fails, how do you access the error message provided by the backend?",
+        options: [
+          "<code>job.error_msg()</code>",
+          "<code>job.status()</code>",
+          "<code>job.error_message()</code>",
+          "<code>job.result()</code> will raise an exception containing the error details."
+        ],
+        answer: 3,
+        explanation: "Calling <code>.result()</code> on a failed job usually triggers the exception that caused the failure."
+      },
+      {
+        text: "How do you cancel a job that is currently in the <code>QUEUED</code> state?",
+        options: [
+          "<code>job.stop()</code>",
+          "<code>job.cancel()</code>",
+          "<code>service.delete_job(job.id)</code>",
+          "<code>job.status = 'CANCEL'</code>"
+        ],
+        answer: 1,
+        explanation: "<code>cancel()</code> attempts to remove the job from the queue or stop it if possible."
+      },
+      {
+        text: "What is the purpose of the <code>JobWatcher</code> widget in a Jupyter Notebook?",
+        options: [
+          "It allows you to write quantum circuits using a GUI.",
+          "It provides a visual dashboard to monitor all active and past jobs on your account.",
+          "It automatically optimizes your circuits for the backend.",
+          "It is used to debug Python syntax errors."
+        ],
+        answer: 1,
+        explanation: "<code>JobWatcher</code> is a popular Jupyter widget for real-time monitoring of all user jobs."
+      },
+      {
+        text: "When retrieving a job by ID, how can you verify which backend it was originally run on?",
+        options: [
+          "<code>job.backend()</code>",
+          "<code>job.target</code>",
+          "<code>job.backend_name</code>",
+          "<code>service.get_backend_of(job)</code>"
+        ],
+        answer: 0,
+        explanation: "<code>job.backend()</code> returns the backend object associated with that job."
+      },
+      {
+        text: "Which method allows you to retrieve the \"quasi-probability distribution\" from a <code>Sampler</code> result?",
+        options: [
+          "<code>result.get_probs()</code>",
+          "<code>result[0].data.meas.get_quasi_probs()</code> (Note: Structure varies by Qiskit version)",
+          "<code>result.quasi_dist</code>",
+          "You must calculate it manually from the counts."
+        ],
+        answer: 1,
+        explanation: "In the V2 results structure, quasi-probabilities are often computed from the sampled data."
+      },
+      {
+        text: "What does the <code>creation_date</code> attribute of a job object tell you?",
+        options: [
+          "When the backend was built.",
+          "When the job was first submitted to the service.",
+          "When the job finished execution.",
+          "The date the Qiskit version was released."
+        ],
+        answer: 1,
+        explanation: "This timestamp marks the moment the service received the job request."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>
