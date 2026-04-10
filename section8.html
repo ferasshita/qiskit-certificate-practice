@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 8 – OpenQASM 3 &amp; Runtime REST API | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 8</div>
+      <h1>OpenQASM 3 &amp; Runtime REST API</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 20 Questions</span>
+        <span>&#x23F1; ~20 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 20 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 20</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "Which header is mandatory at the very beginning of an OpenQASM 3 program?",
+        options: [
+          "<code>OPENQASM 2.0;</code>",
+          "<code>include \"qasm3\";</code>",
+          "<code>OPENQASM 3;</code>",
+          "<code>import qiskit;</code>"
+        ],
+        answer: 2,
+        explanation: "Version headers must be the first non-comment line in the file."
+      },
+      {
+        text: "In OpenQASM 3, which type is used to declare a classical unsigned integer of 8 bits?",
+        options: [
+          "<code>int[8]</code>",
+          "<code>uint[8]</code>",
+          "<code>bit[8]</code>",
+          "<code>byte</code>"
+        ],
+        answer: 1,
+        explanation: "<code>uint[n]</code> is the standard for unsigned integers; <code>bit[n]</code> is for bitstrings."
+      },
+      {
+        text: "What is the correct syntax for defining a custom gate named <code>my_gate</code> that takes one parameter <code>theta</code> and acts on one qubit <code>q</code>?",
+        options: [
+          "<code>gate my_gate(theta) q { ... }</code>",
+          "<code>def gate my_gate(theta) q { ... }</code>",
+          "<code>gate my_gate q(theta) { ... }</code>",
+          "<code>custom gate my_gate(theta) q { ... }</code>"
+        ],
+        answer: 0,
+        explanation: "The syntax follows: <code>gate [name]([params]) [qubits] { [body] }</code>."
+      },
+      {
+        text: "Which Qiskit module is used to export a <code>QuantumCircuit</code> to an OpenQASM 3 string?",
+        options: [
+          "<code>qiskit.qasm3</code>",
+          "<code>qiskit.export.qasm</code>",
+          "<code>qiskit.circuit.qasm3</code>",
+          "<code>qiskit.io</code>"
+        ],
+        answer: 0,
+        explanation: "<code>qiskit.qasm3</code> contains the <code>dump</code> and <code>load</code> functionality."
+      },
+      {
+        text: "How do you declare a register of 5 qubits in OpenQASM 3?",
+        options: [
+          "<code>qreg q[5];</code>",
+          "<code>qubit[5] q;</code>",
+          "<code>quantum q[5];</code>",
+          "<code>register qubit q[5];</code>"
+        ],
+        answer: 1,
+        explanation: "In v3, the type comes first: <code>qubit[size] name;</code>."
+      },
+      {
+        text: "OpenQASM 3 introduces the <code>bool</code> type. What is the standard way to assign a value to it?",
+        options: [
+          "<code>bool my_bool = 1;</code>",
+          "<code>bool my_bool = true;</code>",
+          "<code>bit my_bool = true;</code>",
+          "<code>bool my_bool = \"true\";</code>"
+        ],
+        answer: 1,
+        explanation: "OpenQASM 3 supports boolean literals <code>true</code> and <code>false</code>."
+      },
+      {
+        text: "Which keyword is used in OpenQASM 3 to provide hardware-specific pulse definitions?",
+        options: [
+          "<code>pulse</code>",
+          "<code>defcal</code>",
+          "<code>gate_ref</code>",
+          "<code>calibrate</code>"
+        ],
+        answer: 1,
+        explanation: "<code>defcal</code> (Definition of Calibration) is used for pulse-level control."
+      },
+      {
+        text: "When using <code>qiskit.qasm3.dumps(circuit)</code>, what does the output represent?",
+        options: [
+          "A binary file containing the circuit data.",
+          "A Python dictionary of the circuit.",
+          "A string containing the OpenQASM 3 representation.",
+          "A list of gate instructions."
+        ],
+        answer: 2,
+        explanation: "<code>dumps</code> (dump string) returns the QASM text."
+      },
+      {
+        text: "In an OpenQASM 3 program, what is the effect of the <code>reset q;</code> instruction?",
+        options: [
+          "It deletes the qubit <code>q</code>.",
+          "It sets the state of qubit <code>q</code> to $|0\\rangle$.",
+          "It clears the classical register associated with <code>q</code>.",
+          "It re-initializes the entire quantum register."
+        ],
+        answer: 1,
+        explanation: "<code>reset</code> is an active operation to return a qubit to the ground state."
+      },
+      {
+        text: "How does OpenQASM 3 handle classical <code>for</code> loops?",
+        options: [
+          "<code>for i in range(10) { ... }</code>",
+          "<code>for int i in [0:9] { ... }</code>",
+          "<code>loop 10 { ... }</code>",
+          "<code>for i in 0:9 { ... }</code>"
+        ],
+        answer: 3,
+        explanation: "QASM 3 uses a range syntax <code>start:end</code> or <code>start:step:end</code>."
+      },
+      {
+        text: "Which Qiskit function would you use to create a <code>QuantumCircuit</code> from an existing OpenQASM 2.0 file?",
+        options: [
+          "<code>QuantumCircuit.from_qasm_file()</code>",
+          "<code>qiskit.qasm2.load()</code>",
+          "<code>QuantumCircuit.load_qasm()</code>",
+          "<code>qiskit.io.read_qasm2()</code>"
+        ],
+        answer: 1,
+        explanation: "<code>qiskit.qasm2</code> is the dedicated module for the older standard."
+      },
+      {
+        text: "To interact with the Qiskit IBM Runtime REST API directly, which piece of information is required in the HTTP header for authentication?",
+        options: [
+          "<code>x-access-token</code>",
+          "<code>Authorization: Bearer &lt;API_TOKEN&gt;</code>",
+          "<code>Service-Key</code>",
+          "<code>x-api-key</code>"
+        ],
+        answer: 1,
+        explanation: "Standard Bearer token authentication is used for IBM Cloud/Quantum services."
+      },
+      {
+        text: "What is the primary base URL for the IBM Quantum Runtime REST API?",
+        options: [
+          "<code>https://quantum-computing.ibm.com/api</code>",
+          "<code>https://runtime-api.cloud.ibm.com</code>",
+          "<code>https://qiskit.ibm.com/runtime</code>",
+          "<code>https://api.quantum.ibm.com</code>"
+        ],
+        answer: 1,
+        explanation: "Most production Runtime API calls go through the IBM Cloud Runtime URL."
+      },
+      {
+        text: "Which REST HTTP method is typically used to submit a new job to the Runtime service?",
+        options: [
+          "<code>GET</code>",
+          "<code>PUT</code>",
+          "<code>POST</code>",
+          "<code>PATCH</code>"
+        ],
+        answer: 2,
+        explanation: "<code>POST</code> is used to create new resources (jobs)."
+      },
+      {
+        text: "When using the REST API to query job results, the response is usually in which format?",
+        options: [
+          "XML",
+          "Plain Text",
+          "JSON",
+          "YAML"
+        ],
+        answer: 2,
+        explanation: "JSON is the universal data exchange format for modern REST APIs."
+      },
+      {
+        text: "In OpenQASM 3, what does a physical qubit identifier look like?",
+        options: [
+          "<code>q[0]</code>",
+          "<code>$0</code>",
+          "<code>phys_0</code>",
+          "<code>#0</code>"
+        ],
+        answer: 1,
+        explanation: "Physical qubits (hardwired) are prefixed with <code>$</code>."
+      },
+      {
+        text: "Which statement about OpenQASM 2 and OpenQASM 3 interoperability is true?",
+        options: [
+          "OpenQASM 3 is a strict subset of OpenQASM 2.",
+          "Qiskit can translate most v2 programs into v3, but v3 features like complex loops may not translate back to v2.",
+          "OpenQASM 2 does not support the <code>gate</code> keyword.",
+          "They use the same file extension and are indistinguishable to compilers."
+        ],
+        answer: 1,
+        explanation: "v3 is far more expressive, making back-translation difficult for advanced logic."
+      },
+      {
+        text: "What is the purpose of the <code>include \"stdgates.inc\";</code> statement in OpenQASM?",
+        options: [
+          "It imports the Python standard library.",
+          "It defines standard gates like <code>h</code>, <code>cx</code>, and <code>t</code> so they don't have to be defined manually.",
+          "It enables the use of classical floating-point math.",
+          "It connects the program to the IBM Quantum backend."
+        ],
+        answer: 1,
+        explanation: "It provides the \"standard library\" of common gate definitions."
+      },
+      {
+        text: "In the Runtime REST API, which endpoint suffix is used to retrieve the status of a specific job?",
+        options: [
+          "<code>/jobs/{job_id}/status</code>",
+          "<code>/check/{job_id}</code>",
+          "<code>/jobs/{job_id}</code>",
+          "<code>/runtime/status/{job_id}</code>"
+        ],
+        answer: 2,
+        explanation: "A <code>GET</code> request to the specific job resource returns the job object including status."
+      },
+      {
+        text: "Which OpenQASM 3 feature allows for \"real-time\" classical computation based on measurement results?",
+        options: [
+          "<code>extern</code> functions",
+          "<code>if</code> statements with classical <code>bit</code> comparisons",
+          "<code>callback</code> instructions",
+          "<code>realtime</code> blocks"
+        ],
+        answer: 1,
+        explanation: "Classical control flow allows for feedback loops within the coherence time."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>
