@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 4 – Running Circuits and Runtime Primitives | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 4</div>
+      <h1>Running Circuits and Runtime Primitives</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 20 Questions</span>
+        <span>&#x23F1; ~20 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 20 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 20</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "What is the primary advantage of using a <code>Session</code> compared to a standard <code>Job</code> submission?",
+        options: [
+          "It is free of charge.",
+          "It allows for iterative algorithms (like VQE) to bypass the queue for successive jobs.",
+          "It increases the qubit coherence time.",
+          "It allows the user to run circuits on multiple backends simultaneously."
+        ],
+        answer: 1,
+        explanation: "Sessions reduce queuing overhead for iterative workloads."
+      },
+      {
+        text: "Which execution mode is best suited for running a collection of independent circuits that do not require intermediate classical processing?",
+        options: [
+          "Session",
+          "Interactive",
+          "Batch",
+          "Priority"
+        ],
+        answer: 2,
+        explanation: "Batch mode is for independent jobs; it avoids the \"interactive\" requirement of Sessions."
+      },
+      {
+        text: "In Qiskit Runtime V2, what is a \"PUB\"?",
+        options: [
+          "A Physical Unit of Bias.",
+          "A Primitive Unified Bloc (a tuple containing circuit, parameters, and optionally weights).",
+          "A Parallel Unit Backend.",
+          "A Public User Backend."
+        ],
+        answer: 1,
+        explanation: "PUBs are the fundamental unit of work for V2 Primitives."
+      },
+      {
+        text: "When using <code>SamplerV2</code>, what is the primary output type returned?",
+        options: [
+          "An array of expectation values.",
+          "A quasi-probability distribution.",
+          "A <code>SamplerPubResult</code> containing bitstrings and counts.",
+          "A statevector."
+        ],
+        answer: 2,
+        explanation: "V2 Primitives return detailed objects containing bitstrings/data rather than just floats."
+      },
+      {
+        text: "Which primitive should be used if you need to calculate the energy of a Hamiltonian $\\langle \\psi | H | \\psi \\rangle$?",
+        options: [
+          "Sampler",
+          "Estimator",
+          "Transpiler",
+          "BackendSampler"
+        ],
+        answer: 1,
+        explanation: "Estimators are designed for calculating expectation values of observables."
+      },
+      {
+        text: "If a session is opened and no jobs are submitted for a certain period, it will automatically close. This is known as:",
+        options: [
+          "Hard-stop",
+          "Max-timeout",
+          "Interactive-lag",
+          "Iteration-limit"
+        ],
+        answer: 1,
+        explanation: "The <code>max_timeout</code> ensures resources aren't held by inactive sessions."
+      },
+      {
+        text: "In the broadcasting rules for V2 Primitives, if you provide a single circuit and an array of 5 parameter sets, how many results are generated?",
+        options: [
+          "1",
+          "5",
+          "6",
+          "0 (it raises an error)"
+        ],
+        answer: 1,
+        explanation: "Broadcasting \"fans out\" the parameters across the circuit."
+      },
+      {
+        text: "Which of the following correctly opens a session in Qiskit v2.x?",
+        options: [
+          "<code>session = Session(backend=backend)</code>",
+          "<code>with Session(backend=backend) as session:</code>",
+          "<code>session = backend.open_session()</code>",
+          "<code>with backend.session() as session:</code>"
+        ],
+        answer: 1,
+        explanation: "The context manager (<code>with</code>) is the recommended way to handle Sessions."
+      },
+      {
+        text: "What happens to a job submitted in <code>Batch</code> mode?",
+        options: [
+          "It waits in the regular fair-share queue, but once the first job starts, the others in the batch follow immediately.",
+          "It runs with the highest priority on the system.",
+          "It is automatically transpiled at the hardware level.",
+          "It is only compatible with simulators."
+        ],
+        answer: 0,
+        explanation: "Batching groups jobs to run together once the first job reaches the front of the queue."
+      },
+      {
+        text: "How do you specify the number of shots for a specific PUB in <code>SamplerV2</code>?",
+        options: [
+          "<code>sampler.run(pubs, shots=1024)</code>",
+          "Pass the <code>shots</code> value within the PUB tuple (e.g., <code>(circuit, params, shots)</code>)",
+          "<code>qc.metadata['shots'] = 1024</code>",
+          "It must be set globally in the <code>Options</code> class."
+        ],
+        answer: 1,
+        explanation: "V2 Primitives allow per-PUB configuration, including shots."
+      },
+      {
+        text: "Which method is used to retrieve the result of a primitive run?",
+        options: [
+          "<code>job.get_counts()</code>",
+          "<code>job.result()</code>",
+          "<code>job.wait_for_completion()</code>",
+          "<code>job.output()</code>"
+        ],
+        answer: 1,
+        explanation: "<code>.result()</code> is the standard blocking call to get data."
+      },
+      {
+        text: "In <code>EstimatorV2</code>, what is the result of broadcasting a list of 3 circuits with a list of 3 observables?",
+        options: [
+          "1 expectation value.",
+          "3 expectation values (zipped).",
+          "9 expectation values (Cartesian product).",
+          "It depends on the <code>shots</code> setting."
+        ],
+        answer: 1,
+        explanation: "Broadcasting rules for lists of equal length usually follow a \"zip\" logic."
+      },
+      {
+        text: "What is the maximum duration a Session can remain open (the \"Global Timeout\")?",
+        options: [
+          "5 minutes",
+          "1 hour",
+          "8 hours",
+          "24 hours"
+        ],
+        answer: 2,
+        explanation: "8 hours (or 28,800 seconds) is the typical limit for a single session."
+      },
+      {
+        text: "Which argument in <code>RuntimeOptions</code> allows you to target a specific hardware instance (hub/group/project)?",
+        options: [
+          "<code>target_instance</code>",
+          "<code>instance</code>",
+          "<code>project_id</code>",
+          "<code>service_path</code>"
+        ],
+        answer: 1,
+        explanation: "<code>instance</code> is the parameter used to specify the hub/group/project."
+      },
+      {
+        text: "If you are using a local simulator but want to use the Primitive interface, which class should you use?",
+        options: [
+          "<code>qiskit.primitives.Sampler</code>",
+          "<code>qiskit_ibm_runtime.Sampler</code>",
+          "<code>qiskit.aer.primitives.Sampler</code>",
+          "Both A and C are valid for local simulation."
+        ],
+        answer: 3,
+        explanation: "<code>qiskit.primitives</code> is the reference implementation; Aer provides a high-performance local version."
+      },
+      {
+        text: "What is the benefit of the \"Dedicated\" execution mode?",
+        options: [
+          "It provides exclusive access to a backend for a reserved block of time.",
+          "It is only for IBM employees.",
+          "It allows circuits to bypass the transpiler entirely.",
+          "It ensures 0% error rates."
+        ],
+        answer: 0,
+        explanation: "Dedicated mode is often used for scheduled workshops or high-priority research."
+      },
+      {
+        text: "When broadcasting in <code>SamplerV2</code>, if the circuit has 2 parameters and you provide a parameter array of shape <code>(10, 2)</code>, what is the shape of the output data?",
+        options: [
+          "<code>(1,)</code>",
+          "<code>(10,)</code>",
+          "<code>(2,)</code>",
+          "<code>(20,)</code>"
+        ],
+        answer: 1,
+        explanation: "The first dimension of the array determines the number of experimental outcomes."
+      },
+      {
+        text: "To use the least-busy backend available to you, which code is correct?",
+        options: [
+          "<code>service.least_busy()</code>",
+          "<code>service.backend(least_busy=True)</code>",
+          "<code>service.backends(filters=lambda x: x.status().operational)[0]</code>",
+          "<code>service.get_backend('least_busy')</code>"
+        ],
+        answer: 0,
+        explanation: "<code>service.least_busy()</code> is a built-in helper method in <code>QiskitRuntimeService</code>."
+      },
+      {
+        text: "What is the purpose of the <code>resilience_level</code> option in Qiskit Runtime?",
+        options: [
+          "It increases the power of the dilution refrigerator.",
+          "It enables automatic error mitigation techniques (like T-REX or ZNE).",
+          "It prevents the session from timing out.",
+          "It forces the circuit to run on the most reliable qubits."
+        ],
+        answer: 1,
+        explanation: "Resilience levels (0–3) define the complexity of error mitigation applied."
+      },
+      {
+        text: "In Qiskit v2.x, where can you find the <code>SamplerV2</code> class?",
+        options: [
+          "<code>qiskit.primitives</code>",
+          "<code>qiskit_ibm_runtime</code>",
+          "<code>qiskit.runtime</code>",
+          "<code>qiskit.providers.ibmq</code>"
+        ],
+        answer: 1,
+        explanation: "Runtime-specific primitives (with hardware-specific optimizations) live in <code>qiskit_ibm_runtime</code>."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>

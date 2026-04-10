@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 6 – The Estimator Primitive and Resilience Levels | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 6</div>
+      <h1>The Estimator Primitive and Resilience Levels</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 20 Questions</span>
+        <span>&#x23F1; ~20 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 20 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 20</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "What is the fundamental quantity that the Estimator primitive is designed to compute?",
+        options: [
+          "The statevector of the quantum system.",
+          "The probability distribution of measurement outcomes.",
+          "The expectation value of one or more observables.",
+          "The fidelity between two quantum circuits."
+        ],
+        answer: 2,
+        explanation: "Estimators measure averages (expectation values) of physical properties (observables)."
+      },
+      {
+        text: "Mathematically, for a quantum state $|\\psi\\rangle$ and an observable $\\hat{O}$, what does the Estimator calculate?",
+        options: [
+          "$|\\langle \\psi | \\hat{O} \\rangle|^2$",
+          "$\\langle \\psi | \\hat{O} | \\psi \\rangle$",
+          "$\\text{Tr}(\\hat{O}^2)$",
+          "$\\text{det}(\\hat{O})$"
+        ],
+        answer: 1,
+        explanation: "Standard quantum mechanical definition of an expectation value."
+      },
+      {
+        text: "In Qiskit Runtime V2, what is the structure of an Estimator PUB (Primitive Unified Bloc)?",
+        options: [
+          "<code>(circuit, observable, parameter_values, precision)</code>",
+          "<code>(circuit, counts, shots)</code>",
+          "<code>(observable, backend, coupling_map)</code>",
+          "<code>(parameters, resilience_level)</code>"
+        ],
+        answer: 0,
+        explanation: "V2 PUBs for Estimator require the circuit, observable, and (optional) parameters/precision."
+      },
+      {
+        text: "Which Resilience Level corresponds to using Zero Noise Extrapolation (ZNE)?",
+        options: [
+          "Level 0",
+          "Level 1",
+          "Level 2",
+          "Level 3"
+        ],
+        answer: 2,
+        explanation: "Level 2 is the standard entry point for Zero Noise Extrapolation."
+      },
+      {
+        text: "What is the primary characteristic of Resilience Level 3 in the Estimator?",
+        options: [
+          "It uses basic readout error mitigation.",
+          "It uses Probabilistic Error Cancellation (PEC), which has a high sampling overhead but provides unbiased estimates.",
+          "It disables all error mitigation to maximize speed.",
+          "It only works on simulators."
+        ],
+        answer: 1,
+        explanation: "PEC is theoretically powerful but requires many more shots to negate noise."
+      },
+      {
+        text: "If you want to achieve a specific statistical error (standard deviation) in your result, which parameter in <code>EstimatorV2</code> should you set?",
+        options: [
+          "<code>shots</code>",
+          "<code>precision</code>",
+          "<code>tolerance</code>",
+          "<code>error_margin</code>"
+        ],
+        answer: 1,
+        explanation: "V2 Primitives shift from fixed <code>shots</code> to a <code>precision</code> target for more reliable results."
+      },
+      {
+        text: "How are observables typically passed to the Estimator in Qiskit?",
+        options: [
+          "As a list of bitstrings.",
+          "As a <code>SparsePauliOp</code> object.",
+          "As a raw NumPy matrix.",
+          "As a <code>QuantumCircuit</code> that performs a measurement."
+        ],
+        answer: 1,
+        explanation: "<code>SparsePauliOp</code> is the efficient way to represent sums of Pauli strings."
+      },
+      {
+        text: "What does \"Pauli Twirling\" (enabled in higher resilience levels) do to the noise in an Estimator run?",
+        options: [
+          "It removes the noise entirely.",
+          "It converts coherent errors into stochastic Pauli noise, making mitigation more effective.",
+          "It rotates the qubits to the Z-basis.",
+          "It increases the qubit $T_1$ time."
+        ],
+        answer: 1,
+        explanation: "Twirling makes noise behavior predictable and easier for algorithms to \"subtract.\""
+      },
+      {
+        text: "In <code>EstimatorV2</code>, if you provide a list of 5 observables for a single circuit and a single set of parameters, how many expectation values will be returned?",
+        options: [
+          "1",
+          "5",
+          "10",
+          "0"
+        ],
+        answer: 1,
+        explanation: "PUBs are vectorized; the Estimator processes each observable in the list."
+      },
+      {
+        text: "Which theoretical concept allows the Estimator to calculate the expectation value of a non-diagonal operator like $X$?",
+        options: [
+          "Measuring in the computational basis and performing a basis rotation (e.g., using $H$).",
+          "Directly measuring the qubit's phase using a classical sensor.",
+          "Using the Sampler and then squaring the result.",
+          "It is only possible on fault-tolerant hardware."
+        ],
+        answer: 0,
+        explanation: "Non-diagonal operators are measured by rotating into the Z-basis before measurement."
+      },
+      {
+        text: "What is the \"Sampling Overhead\" associated with Probabilistic Error Cancellation (PEC)?",
+        options: [
+          "It scales linearly with the number of qubits.",
+          "It scales exponentially with the \"noise strength\" of the circuit.",
+          "It is always 1024 shots.",
+          "It is zero."
+        ],
+        answer: 1,
+        explanation: "The \"cost\" of PEC is the massive increase in shots needed to suppress noise variance."
+      },
+      {
+        text: "When using Resilience Level 1, which technique is specifically applied to the measurement data?",
+        options: [
+          "Zero Noise Extrapolation.",
+          "Twirled Readout Error Mitigation (TREX).",
+          "Gate-error suppression.",
+          "Backend re-calibration."
+        ],
+        answer: 1,
+        explanation: "TREX is the default readout mitigation for Level 1."
+      },
+      {
+        text: "Which class is used to define the options (like resilience level) for the Estimator in <code>qiskit_ibm_runtime</code>?",
+        options: [
+          "<code>EstimatorOptions</code>",
+          "<code>RuntimeConfig</code>",
+          "<code>BackendOptions</code>",
+          "<code>PrimitiveSettings</code>"
+        ],
+        answer: 0,
+        explanation: "<code>EstimatorOptions</code> (or <code>Options</code>) holds the resilience and transpilation settings."
+      },
+      {
+        text: "What happens if an observable passed to the Estimator is not Hermitian?",
+        options: [
+          "The Estimator takes the real part.",
+          "The Estimator raises an error, as physical observables must be Hermitian.",
+          "It proceeds but the result is a complex number.",
+          "It automatically converts it to an Identity matrix."
+        ],
+        answer: 1,
+        explanation: "Quantum observables correspond to Hermitian operators with real eigenvalues."
+      },
+      {
+        text: "In ZNE (Resilience Level 2), how is the \"Zero Noise\" limit estimated?",
+        options: [
+          "By cooling the hardware to absolute zero.",
+          "By running the circuit at different \"noise factors\" (e.g., scaling gate times) and extrapolating back to zero noise.",
+          "By running the circuit on a perfect simulator.",
+          "By subtracting the background noise measured on an idle qubit."
+        ],
+        answer: 1,
+        explanation: "ZNE works by making the noise \"worse\" on purpose to see the trend and project to \"none.\""
+      },
+      {
+        text: "Which parameter in the <code>Estimator</code> allows you to specify a hub, group, and project?",
+        options: [
+          "<code>options.instance</code>",
+          "<code>options.environment.instance</code>",
+          "<code>options.project</code>",
+          "You define this in the <code>QiskitRuntimeService</code> before initializing the Estimator."
+        ],
+        answer: 3,
+        explanation: "The <code>QiskitRuntimeService</code> handles the connection; the Estimator uses that service's context."
+      },
+      {
+        text: "If you use <code>precision=0.01</code>, what does the Estimator guarantee (statistically)?",
+        options: [
+          "The runtime will be exactly 1 second.",
+          "The standard error of the expectation value estimate will be approximately $0.01$.",
+          "Only 100 shots will be taken.",
+          "The result is accurate to the 10th decimal place."
+        ],
+        answer: 1,
+        explanation: "Precision targets the standard deviation of the mean ($\\sigma / \\sqrt{N}$)."
+      },
+      {
+        text: "What is the default <code>resilience_level</code> for the Estimator in many Qiskit Runtime environments if not specified?",
+        options: [
+          "0",
+          "1",
+          "2",
+          "3"
+        ],
+        answer: 1,
+        explanation: "Level 1 (Readout mitigation) is the most common default for hardware."
+      },
+      {
+        text: "When using the <code>Estimator</code>, why is it often better to submit many observables in a single PUB?",
+        options: [
+          "It reduces the cost of the session.",
+          "It allows the Estimator to group compatible measurements (like $ZZ$ and $ZI$) to save shots.",
+          "It makes the output easier to read.",
+          "It prevents the backend from overheating."
+        ],
+        answer: 1,
+        explanation: "Measurement grouping (commuting observables) is a key optimization for the Estimator."
+      },
+      {
+        text: "Which command correctly initializes an <code>EstimatorV2</code> with a specific backend?",
+        options: [
+          "<code>estimator = Estimator(backend=backend)</code>",
+          "<code>estimator = EstimatorV2(mode=backend)</code>",
+          "<code>estimator = Estimator(mode=Session(backend=backend))</code>",
+          "Both B and C are valid patterns depending on whether a Session is used."
+        ],
+        answer: 3,
+        explanation: "In v2.x, the <code>mode</code> parameter (accepting a backend or session) is the standard interface."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>
