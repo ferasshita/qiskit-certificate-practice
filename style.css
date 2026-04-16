@@ -551,6 +551,154 @@ code {
 .site-footer a { color: #78a9ff; text-decoration: none; }
 .site-footer a:hover { text-decoration: underline; }
 
+/* ---------- Flashcard Section ---------- */
+.flashcard-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.flashcard-section h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 2.5rem 0 .75rem;
+  padding-bottom: .5rem;
+  border-bottom: 2px solid var(--ibm-blue);
+}
+
+.flashcard-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ibm-purple);
+  margin: 2rem 0 .6rem;
+}
+
+.flashcard-section p {
+  font-size: .93rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.65;
+}
+
+.flashcard-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 1.75rem;
+}
+
+.flashcard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.flashcard-table thead th {
+  background: var(--ibm-blue);
+  color: #fff;
+  padding: .75rem 1.1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.flashcard-table tbody tr:nth-child(even) {
+  background: #f0f4ff;
+}
+
+.flashcard-table tbody td {
+  padding: .75rem 1.1rem;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.flashcard-table tbody td:first-child {
+  font-weight: 600;
+  color: var(--text);
+  min-width: 200px;
+}
+
+.flashcard-table tbody td:last-child {
+  color: var(--text-muted);
+}
+
+.broadcasting-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.75rem;
+}
+
+.broadcasting-table thead th {
+  background: var(--ibm-purple);
+  color: #fff;
+  padding: .65rem 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.broadcasting-table tbody td {
+  padding: .65rem 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.broadcasting-table tbody td:last-child {
+  font-weight: 700;
+  color: var(--ibm-blue);
+}
+
+.broadcasting-table tbody tr:nth-child(even) {
+  background: #f5f0ff;
+}
+
+.code-flashcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.code-flashcard-front {
+  padding: .85rem 1.2rem;
+  background: #f0f4ff;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: .93rem;
+  color: var(--text);
+}
+
+.code-flashcard-front::before {
+  content: "Q: ";
+  color: var(--ibm-blue);
+}
+
+.code-flashcard-back {
+  padding: 1rem 1.2rem;
+}
+
+.code-flashcard-back pre {
+  background: #161616;
+  color: #f4f4f4;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: .84rem;
+  overflow-x: auto;
+  line-height: 1.6;
+  margin-top: .5rem;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 600px) {
   .site-header .inner { height: 52px; }
