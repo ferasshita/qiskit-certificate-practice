@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 4B – Execution Modes, Primitives &amp; Flashcards | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 4B</div>
+      <h1>Run Quantum Circuits – Execution Modes, Primitives V2 &amp; PUBs</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 20 Questions</span>
+        <span>&#x23F1; ~20 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+        <span>&#x1F4D6; Flashcards included</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 20 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 20</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Flashcard Study Guide ── -->
+  <div class="flashcard-section">
+
+    <h2>&#x1F4D6; Flashcard Study Guide: Run Quantum Circuits</h2>
+
+    <!-- ── Execution Modes ── -->
+    <h3>Flashcard Set: Qiskit Runtime Execution Modes</h3>
+
+    <div class="flashcard-table-wrap">
+      <table class="flashcard-table">
+        <thead>
+          <tr>
+            <th>Front (Question / Concept)</th>
+            <th>Back (Answer / Definition)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What is Job Mode (Standard)?</td>
+            <td>The default mode where each job is treated independently. Every job submitted enters the regular fair-share queue, incurring full queuing overhead for every execution.</td>
+          </tr>
+          <tr>
+            <td>Define Session Mode.</td>
+            <td>An execution mode that allows for <strong>iterative</strong> workloads. Once the first job starts, the session stays active for a set time (TTL), giving subsequent jobs <strong>priority access</strong> to the backend.</td>
+          </tr>
+          <tr>
+            <td>Define Batch Mode.</td>
+            <td>A mode designed for <strong>independent</strong> jobs submitted simultaneously. It allows multiple jobs to be grouped to reduce queuing overhead, but unlike Sessions, there is no interactivity between the user and the QPU.</td>
+          </tr>
+          <tr>
+            <td>What is the primary benefit of Session Mode?</td>
+            <td><strong>Reduced Latency.</strong> By keeping the connection "warm," it minimizes the time spent waiting in the queue between iterations of an algorithm like VQE or QAOA.</td>
+          </tr>
+          <tr>
+            <td>What is the "First-in, First-out" (FIFO) behavior in a Session?</td>
+            <td>Within a single session, jobs are executed in the order they are submitted. However, the session itself has priority over other non-session jobs in the general queue.</td>
+          </tr>
+          <tr>
+            <td>What does "Max Time" or "TTL" (Time-to-Live) refer to?</td>
+            <td>The maximum duration a Session or Batch remains active. If no new jobs are submitted within a specific idle window, the session closes to free up hardware for others.</td>
+          </tr>
+          <tr>
+            <td>When should you use Batch mode instead of Session mode?</td>
+            <td>Use <strong>Batch</strong> when you have multiple circuits that do not depend on each other's results. Use <strong>Session</strong> when the next circuit's parameters depend on the results of the previous job.</td>
+          </tr>
+          <tr>
+            <td>How do you initialize a Session in Qiskit v2.x?</td>
+            <td>Using a context manager: <code>with Session(service=service, backend=backend) as session:</code></td>
+          </tr>
+          <tr>
+            <td>Does Batch mode support interactive feedback?</td>
+            <td><strong>No.</strong> Batch mode is "fire and forget." You submit all jobs at once; you cannot use the result of Job A to modify Job B within the same Batch context.</td>
+          </tr>
+          <tr>
+            <td>What is "Dedicated" or "Priority" access in the context of Sessions?</td>
+            <td>It refers to the "reservation" of a spot at the front of the queue for the duration of the session, ensuring that your iterative algorithm isn't interrupted by other users' jobs.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Primitives V2 & Hardware ── -->
+    <h3>Flashcard Set: Primitives V2 &amp; Hardware Execution</h3>
+
+    <div class="flashcard-table-wrap">
+      <table class="flashcard-table">
+        <thead>
+          <tr>
+            <th>Front (Concept / Question)</th>
+            <th>Back (Answer / Definition)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What are the two main Primitives in Qiskit Runtime V2?</td>
+            <td><strong>SamplerV2</strong> (returns bitstrings/counts) and <strong>EstimatorV2</strong> (returns expectation values of observables).</td>
+          </tr>
+          <tr>
+            <td>What does PUB stand for?</td>
+            <td><strong>Primitive Unified Bloc.</strong> It is the standardized format used to submit circuits and data to V2 primitives.</td>
+          </tr>
+          <tr>
+            <td>Structure of a SamplerV2 PUB?</td>
+            <td><code>(circuit, parameter_values, shots)</code> — Note: <code>parameter_values</code> and <code>shots</code> are optional.</td>
+          </tr>
+          <tr>
+            <td>Structure of an EstimatorV2 PUB?</td>
+            <td><code>(circuit, observables, parameter_values, precision)</code> — Note: <code>parameter_values</code> and <code>precision</code> are optional.</td>
+          </tr>
+          <tr>
+            <td>What is the purpose of "Broadcasting" in a PUB?</td>
+            <td>It allows you to pair a single circuit with multiple parameter sets or observables without repeating the circuit object, reducing data transfer and overhead.</td>
+          </tr>
+          <tr>
+            <td>How do you filter for a real hardware backend?</td>
+            <td>Using <code>service.least_busy(simulator=False, operational=True)</code>.</td>
+          </tr>
+          <tr>
+            <td>Where do you specify the number of shots in SamplerV2?</td>
+            <td>Shots can be specified globally in the <code>Options</code> or <strong>locally per PUB</strong> as the third element of the tuple.</td>
+          </tr>
+          <tr>
+            <td>What is the return type of <code>SamplerV2.run().result()</code>?</td>
+            <td>A <code>PrimitiveResult</code> containing <strong>DataBins</strong> (e.g., <code>pub_result.data.meas.get_counts()</code>).</td>
+          </tr>
+          <tr>
+            <td>What happens if you provide 1 circuit and 5 sets of parameters in one PUB?</td>
+            <td><strong>Broadcasting</strong> occurs: the circuit is executed 5 times, once for each set of parameters, and 5 results are returned.</td>
+          </tr>
+          <tr>
+            <td>How is 'precision' used in EstimatorV2?</td>
+            <td>It defines the target standard error for the expectation value. The primitive will automatically determine the number of shots needed to reach that precision.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Broadcasting Rules ── -->
+    <h3>Deep Dive: Visualizing Broadcasting Rules</h3>
+    <p>Broadcasting follows NumPy-like rules. If a PUB contains a singleton (length&nbsp;1) and an array (length&nbsp;N), the singleton is "stretched" to match the array.</p>
+
+    <div class="flashcard-table-wrap">
+      <table class="broadcasting-table">
+        <thead>
+          <tr>
+            <th>Circuit</th>
+            <th>Observables</th>
+            <th>Parameters</th>
+            <th>Resulting Executions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>1</td>
+            <td>10</td>
+            <td>10 &mdash; 1 circuit, 1 observable, 10 different params</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>5</td>
+            <td>1</td>
+            <td>5 &mdash; 1 circuit, 5 different observables, 1 param</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>5</td>
+            <td>5</td>
+            <td>5 &mdash; 1 circuit, Obs&nbsp;A with Param&nbsp;A, Obs&nbsp;B with Param&nbsp;B, etc.</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>5</td>
+            <td>5</td>
+            <td>5 &mdash; Circuit&nbsp;A with Obs&nbsp;A and Param&nbsp;A, etc.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Code Syntax Flashcards ── -->
+    <h3>Code Syntax Flashcards (Practical)</h3>
+
+    <div class="code-flashcard">
+      <div class="code-flashcard-front">How do you run two different circuits in a single <code>SamplerV2</code> call?</div>
+      <div class="code-flashcard-back">
+        Pass a list of two PUBs:
+        <pre><code># Pass a list of two PUBs
+sampler = SamplerV2(mode=backend)
+job = sampler.run([(qc1,), (qc2,)])</code></pre>
+      </div>
+    </div>
+
+    <div class="code-flashcard">
+      <div class="code-flashcard-front">How do you retrieve results from the first PUB in a V2 job?</div>
+      <div class="code-flashcard-back">
+        Access the PUB result by index, then navigate the data bin:
+        <pre><code>result = job.result()
+pub_result = result[0]  # Access the first PUB result
+counts = pub_result.data.meas.get_counts()</code></pre>
+      </div>
+    </div>
+
+    <div class="code-flashcard">
+      <div class="code-flashcard-front">How do you define a PUB for <code>EstimatorV2</code> with a specific precision?</div>
+      <div class="code-flashcard-back">
+        Precision is the optional fourth element of the tuple:
+        <pre><code># (circuit, observables, parameter_values, precision)
+pub = (my_circuit, my_obs, my_params, 0.01)
+job = estimator.run([pub])</code></pre>
+      </div>
+    </div>
+
+  </div><!-- /.flashcard-section -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      /* ── Questions 1–5: Execution Modes ── */
+      {
+        text: "When using Qiskit Runtime, which execution mode is designed to minimize queue time by keeping the quantum resources active between successive job submissions?",
+        options: [
+          "Batch",
+          "Session",
+          "Job",
+          "Dedicated"
+        ],
+        answer: 1,
+        explanation: "Sessions provide a dedicated window of time where submitted jobs are prioritized in the backend queue."
+      },
+      {
+        text: "A user submits five independent circuits that do not require classical feedback between executions. Which mode is the most efficient for reducing overall queuing overhead without requiring an interactive session?",
+        options: [
+          "Session",
+          "Priority",
+          "Batch",
+          "Sequential"
+        ],
+        answer: 2,
+        explanation: "Batch mode allows you to group independent jobs together to reduce the overhead of multiple individual queue entries."
+      },
+      {
+        text: "What happens when a Session exceeds its maximum \"Max Time\" (TTL – Time to Live)?",
+        options: [
+          "The session is automatically extended if the job is still running.",
+          "All currently running jobs are cancelled immediately.",
+          "The session closes, and any subsequent jobs submitted to that session will fail, but currently running jobs complete.",
+          "The backend enters a cooldown phase and refuses all connections for 10 minutes."
+        ],
+        answer: 2,
+        explanation: "Once the session's maximum duration is reached, the session context closes. Jobs already running are allowed to finish, but no new jobs can be submitted to that session."
+      },
+      {
+        text: "Which parameter in primitive initialization specifies the use of a Session in Qiskit v2.x?",
+        options: [
+          "<code>session_id</code>",
+          "<code>mode</code>",
+          "<code>context</code>",
+          "<code>execution_type</code>"
+        ],
+        answer: 1,
+        explanation: "In Qiskit v2.x, the <code>mode</code> parameter in the primitive constructor (e.g., <code>SamplerV2(mode=session)</code>) is used to define the execution environment."
+      },
+      {
+        text: "True or False: You can switch between different backends within a single active Session.",
+        options: [
+          "True",
+          "False"
+        ],
+        answer: 1,
+        explanation: "A session is bound to a specific backend instance at the time of creation. You cannot switch backends mid-session."
+      },
+      /* ── Questions 6–12: Primitives V2 & PUBs ── */
+      {
+        text: "What does the acronym PUB stand for in the context of Qiskit Runtime V2?",
+        options: [
+          "Private Unitary Block",
+          "Primitive Unified Bloc",
+          "Parallel Unitary Batch",
+          "Programmable User Bundle"
+        ],
+        answer: 1,
+        explanation: "PUB stands for Primitive Unified Bloc, the standardized input format for Primitives V2."
+      },
+      {
+        text: "In <code>SamplerV2</code>, what is the correct structure for a single PUB?",
+        options: [
+          "<code>(circuit, parameter_values, precision)</code>",
+          "<code>(circuit, shots)</code>",
+          "<code>(circuit, parameter_values, shots)</code>",
+          "<code>(circuit, observables, parameter_values)</code>"
+        ],
+        answer: 2,
+        explanation: "A SamplerV2 PUB consists of the circuit, the parameter values (if any), and the optional shot count for that specific circuit."
+      },
+      {
+        text: "Which primitive should be used if the goal is to calculate the expectation value of a specific operator (observable)?",
+        options: [
+          "SamplerV1",
+          "SamplerV2",
+          "EstimatorV2",
+          "ResultV2"
+        ],
+        answer: 2,
+        explanation: "EstimatorV2 is designed to calculate expectation values of observables."
+      },
+      {
+        text: "How does <code>SamplerV2</code> return results by default?",
+        options: [
+          "A dictionary of bitstrings and counts.",
+          "A <code>SamplerResult</code> object containing bit arrays.",
+          "A quasi-probability distribution.",
+          "A statevector array."
+        ],
+        answer: 1,
+        explanation: "SamplerV2 returns bit arrays (DataBins) which allow for more efficient data handling than the older counts dictionaries."
+      },
+      {
+        text: "When using <code>EstimatorV2</code>, where is the precision (target error) specified in a PUB?",
+        options: [
+          "As the first element of the tuple.",
+          "It cannot be specified per PUB; it must be global.",
+          "As the fourth element of the tuple: <code>(circuit, observables, parameter_values, precision)</code>.",
+          "Inside the Options dictionary only."
+        ],
+        answer: 2,
+        explanation: "EstimatorV2 allows for an optional precision value as the fourth element of each PUB."
+      },
+      {
+        text: "Which method is used to execute PUBs in both <code>SamplerV2</code> and <code>EstimatorV2</code>?",
+        options: [
+          "<code>.execute()</code>",
+          "<code>.run()</code>",
+          "<code>.submit()</code>",
+          "<code>.predict()</code>"
+        ],
+        answer: 1,
+        explanation: "Like their predecessors, V2 primitives use the <code>.run()</code> method."
+      },
+      {
+        text: "If you pass a list of 5 PUBs to <code>sampler.run()</code>, how many jobs are created in Qiskit Runtime?",
+        options: [
+          "1",
+          "5",
+          "1 per qubit used",
+          "0 &mdash; Primitives do not use jobs"
+        ],
+        answer: 0,
+        explanation: "A single call to <code>.run()</code> creates a single job containing all the PUBs provided in the list."
+      },
+      /* ── Questions 13–16: Broadcasting Rules ── */
+      {
+        text: "If you provide one circuit and a list of 10 different parameter sets in a single PUB to <code>EstimatorV2.run()</code>, how many expectation values will be returned?",
+        options: [
+          "1",
+          "10",
+          "11",
+          "0 (this is an invalid input)"
+        ],
+        answer: 1,
+        explanation: "Broadcasting rules specify that if one input is a singleton (like one circuit) and another is an array (like 10 parameter sets), the singleton is \"broadcast\" to match the array length."
+      },
+      {
+        text: "You have 2 circuits and 2 parameter sets. You want to run Circuit A with Parameter Set 1 and Circuit B with Parameter Set 2. How should you structure your <code>run()</code> call?",
+        options: [
+          "<code>sampler.run([(circuitA, param1), (circuitB, param2)])</code>",
+          "<code>sampler.run([circuitA, circuitB], [param1, param2])</code>",
+          "<code>sampler.run(circuitA, param1).run(circuitB, param2)</code>",
+          "<code>sampler.run([(circuitA, circuitB), (param1, param2)])</code>"
+        ],
+        answer: 0,
+        explanation: "You should provide a list containing two distinct PUBs. Each PUB pairs its circuit with the correct parameter set."
+      },
+      {
+        text: "In <code>EstimatorV2</code>, if you provide 1 circuit and 5 observables in a single PUB <code>(circuit, observables)</code>, what is the result?",
+        options: [
+          "An error; the shapes must match exactly.",
+          "1 result representing the average of all observables.",
+          "5 results, one for each observable paired with the single circuit.",
+          "6 results, including the identity."
+        ],
+        answer: 2,
+        explanation: "The circuit is broadcast to match the number of observables, producing one expectation value per observable."
+      },
+      {
+        text: "Which of the following is NOT a valid broadcasting scenario in a single PUB?",
+        options: [
+          "1 circuit, 10 parameter sets.",
+          "10 circuits, 1 parameter set.",
+          "5 circuits, 10 parameter sets.",
+          "1 circuit, 1 observable, 1 parameter set."
+        ],
+        answer: 2,
+        explanation: "While singletons can be broadcast to match arrays, two arrays of different lengths (5 and 10) cannot be broadcast against each other; they must have compatible shapes."
+      },
+      /* ── Questions 17–20: Options & Hardware Interaction ── */
+      {
+        text: "Which \"Resilience Level\" in Qiskit Runtime Primitives is typically used to enable Readout Error Mitigation?",
+        options: [
+          "0",
+          "1",
+          "2",
+          "3"
+        ],
+        answer: 1,
+        explanation: "Resilience Level 1 generally enables basic error mitigation such as readout mitigation."
+      },
+      {
+        text: "How do you retrieve the bitstring counts from a <code>SamplerV2</code> result object for a job named <code>job</code>?",
+        options: [
+          "<code>job.result()[0].data.meas.get_counts()</code>",
+          "<code>job.counts()</code>",
+          "<code>job.result().get_counts(0)</code>",
+          "<code>job.result()[0].counts</code>"
+        ],
+        answer: 0,
+        explanation: "In V2, you access the data bin (e.g., <code>.meas</code>) and use <code>.get_counts()</code>."
+      },
+      {
+        text: "To run a circuit on a real IBM Quantum system, what must be passed to <code>QiskitRuntimeService</code> to filter for hardware?",
+        options: [
+          "<code>simulator=True</code>",
+          "<code>operational=True, simulator=False</code>",
+          "<code>real_hardware=True</code>",
+          "<code>mode=\"hardware\"</code>"
+        ],
+        answer: 1,
+        explanation: "Filtering by <code>simulator=False</code> ensures you are targeting a physical QPU."
+      },
+      {
+        text: "What is the default <code>optimization_level</code> for transpilation within Qiskit Runtime Primitives if not specified?",
+        options: [
+          "0",
+          "1",
+          "3",
+          "It depends on the backend"
+        ],
+        answer: 1,
+        explanation: "Optimization level 1 is the default for most runtime primitives."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>
