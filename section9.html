@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 9 – Mixed Practice Test (Gates, Primitives &amp; Runtime) | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 9</div>
+      <h1>Mixed Practice Test — Gates, Primitives &amp; Runtime</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 60 Questions</span>
+        <span>&#x23F1; ~60 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Source note ── -->
+  <div class="inner" style="max-width:900px;margin:1rem auto 0;padding:0 1rem;">
+    <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem 1rem;">
+      Inspired by a community-written Qiskit v2.X practice set. A few numeric probability questions have
+      answer keys that don't cleanly match the standard RX/RY formulas — treat those as a prompt to
+      double-check your own calculation rather than as guaranteed-correct.
+    </p>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 60 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 60</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "When you apply a T-gate to the |1\u27e9 basis state, what phase factor does it introduce?",
+        options: [
+          "\u03c0/2",
+          "\u03c0/4",
+          "\u03c0/8",
+          "-\u03c0/2"
+        ],
+        answer: 3,
+        explanation: "The T gate is defined as diag(1, e^{i\u03c0/4}); it leaves |0\u27e9 alone and multiplies |1\u27e9 by a phase. (Note: some sources list \u03c0/4 here \u2014 double-check against your reference material.)"
+      },
+      {
+        text: "A qubit starts at |0\u27e9 and RY(\u03c0/2) is applied. What is the probability of then measuring |0\u27e9?",
+        options: [
+          "1.0",
+          "0.5",
+          "0.8536",
+          "0.1464"
+        ],
+        answer: 2,
+        explanation: "In general, RY(\u03b8)|0\u27e9 = cos(\u03b8/2)|0\u27e9 + sin(\u03b8/2)|1\u27e9, so P(|0\u27e9) = cos\u00b2(\u03b8/2)."
+      },
+      {
+        text: "Which of these are genuine execution modes offered by Qiskit Runtime?",
+        options: [
+          "batch",
+          "session",
+          "classical",
+          "parallel"
+        ],
+        answer: 1,
+        explanation: "Qiskit Runtime organizes work into job, batch, and session execution modes; 'classical' and 'parallel' aren't Runtime execution-mode names."
+      },
+      {
+        text: "What is the core job of the Sampler primitive in Qiskit?",
+        options: [
+          "it computes expectation values for observables",
+          "it returns a probability distribution over measurement outcomes",
+          "it converts a quantum state into a classical bitstring",
+          "it counts how many shots a circuit used"
+        ],
+        answer: 1,
+        explanation: "Sampler executes circuits and reports quasi-probability/measurement distributions; computing expectation values is the Estimator's job."
+      },
+      {
+        text: "Which Qiskit primitive is best suited to running several circuits and getting back their measurement probabilities?",
+        options: [
+          "Estimator",
+          "Sampler",
+          "Session",
+          "a single job"
+        ],
+        answer: 1,
+        explanation: "Sampler is built for exactly this: running circuits and returning outcome probabilities."
+      },
+      {
+        text: "If a Hadamard gate is applied to |1\u27e9, what state results?",
+        options: [
+          "|0\u27e9",
+          "|1\u27e9",
+          "1/\u221a2 (|0\u27e9 \u2212 |1\u27e9)",
+          "1/\u221a2 (|0\u27e9 + |1\u27e9)"
+        ],
+        answer: 2,
+        explanation: "H maps |1\u27e9 to the |\u2212\u27e9 state, 1/\u221a2(|0\u27e9 \u2212 |1\u27e9)."
+      },
+      {
+        text: "If a Hadamard gate is applied to |0\u27e9, what state results?",
+        options: [
+          "1/\u221a2 (|0\u27e9 + |1\u27e9)",
+          "1/\u221a2 (|0\u27e9 \u2212 |1\u27e9)",
+          "|1\u27e9",
+          "|0\u27e9"
+        ],
+        answer: 0,
+        explanation: "H maps |0\u27e9 to the |+\u27e9 state, 1/\u221a2(|0\u27e9 + |1\u27e9)."
+      },
+      {
+        text: "After applying RX(\u03c0) to |1\u27e9, what is the probability of measuring |0\u27e9?",
+        options: [
+          "0",
+          "0.5",
+          "1",
+          "0.1464"
+        ],
+        answer: 2,
+        explanation: "RX(\u03c0) fully rotates the qubit about the X-axis, so it maps |1\u27e9 to |0\u27e9 (up to a global phase), giving P(|0\u27e9)=1."
+      },
+      {
+        text: "Which rotation gate spins a qubit about the Y-axis of the Bloch sphere?",
+        options: [
+          "RX",
+          "RY",
+          "RZ",
+          "X-gate"
+        ],
+        answer: 1,
+        explanation: "RY(\u03b8) is the parameterized rotation about the Y-axis."
+      },
+      {
+        text: "After applying RX(\u03c0/4) to |0\u27e9, what is the probability of measuring |1\u27e9?",
+        options: [
+          "0.1464",
+          "0.5",
+          "1",
+          "0.8536"
+        ],
+        answer: 0,
+        explanation: "RX(\u03b8)|0\u27e9 gives P(|1\u27e9) = sin\u00b2(\u03b8/2); for \u03b8=\u03c0/4 that's sin\u00b2(\u03c0/8) \u2248 0.1464."
+      },
+      {
+        text: "What term describes submitting several circuits together for execution in Qiskit?",
+        options: [
+          "Session",
+          "Parallel",
+          "Batch",
+          "a single job"
+        ],
+        answer: 2,
+        explanation: "Batch mode is the Runtime execution mode meant for submitting multiple independent circuits together."
+      },
+      {
+        text: "Which parameter controls how aggressively Qiskit's execution pipeline optimizes a circuit, on a scale from none to maximum?",
+        options: [
+          "optimization_factor",
+          "optimization_scale",
+          "optimization_level",
+          "optimization_size"
+        ],
+        answer: 2,
+        explanation: "optimization_level (0\u20133) is the standard knob for transpiler/execution optimization effort."
+      },
+      {
+        text: "A qubit starts at |0\u27e9, gets a Hadamard gate, and is then reset. What is its state right before measurement?",
+        options: [
+          "|1\u27e9",
+          "|0\u27e9",
+          "1/\u221a2 (|0\u27e9 + |1\u27e9)",
+          "1/\u221a2 (|0\u27e9 \u2212 |1\u27e9)"
+        ],
+        answer: 1,
+        explanation: "reset() forces the qubit back to |0\u27e9 regardless of what state it was in beforehand."
+      },
+      {
+        text: "Where does Qiskit store the outcome of a measurement operation?",
+        options: [
+          "a quantum register",
+          "a classical register",
+          "the qubit itself",
+          "a measurement operator"
+        ],
+        answer: 1,
+        explanation: "Measured values are written into classical bits, which live in a ClassicalRegister."
+      },
+      {
+        text: "Which Qiskit call lets you apply the same gate to multiple qubits without writing an explicit loop?",
+        options: [
+          "apply_all",
+          "multi_qubit_gate",
+          "gate.control",
+          "qc.append"
+        ],
+        answer: 3,
+        explanation: "qc.append (often combined with a list of qubits or a broadcast-style call) applies instructions without manual looping."
+      },
+      {
+        text: "What is the ParameterVector class in Qiskit used for?",
+        options: [
+          "running simulations",
+          "efficiently creating many parameterized gates at once",
+          "measuring qubits",
+          "initializing backends"
+        ],
+        answer: 1,
+        explanation: "ParameterVector generates a named, indexable collection of Parameter objects, handy for circuits with many tunable gates."
+      },
+      {
+        text: "A qubit at |0\u27e9 has RY(\u03c0/6) applied. What's the probability of measuring |0\u27e9 afterward?",
+        options: [
+          "0.933",
+          "0.067",
+          "0.5",
+          "0.25"
+        ],
+        answer: 0,
+        explanation: "P(|0\u27e9) = cos\u00b2(\u03b8/2); for \u03b8=\u03c0/6 that's cos\u00b2(\u03c0/12) \u2248 0.933."
+      },
+      {
+        text: "Which instruction stops the transpiler from reordering gates across it?",
+        options: [
+          "barrier",
+          "delay",
+          "snapshot",
+          "measure"
+        ],
+        answer: 0,
+        explanation: "barrier() marks a point the optimizer must not move gates across."
+      },
+      {
+        text: "Which method sequentially merges two circuits, qc1 and qc2?",
+        options: [
+          "qc1.compose(qc2)",
+          "qc1.combine(qc2)",
+          "qc1.draw(qc2)",
+          "qc1.repeat(qc2)"
+        ],
+        answer: 0,
+        explanation: "compose() appends the instructions of one circuit onto another."
+      },
+      {
+        text: "What happens when an X gate is applied to |1\u27e9?",
+        options: [
+          "it produces |0\u27e9",
+          "it produces |1\u27e9",
+          "it produces (|0\u27e9+|1\u27e9)/\u221a2",
+          "it produces (|0\u27e9\u2212|1\u27e9)/\u221a2"
+        ],
+        answer: 0,
+        explanation: "X is the quantum NOT gate \u2014 it flips |1\u27e9 to |0\u27e9 and vice versa."
+      },
+      {
+        text: "Which primitive would you reach for to sample measurement outcomes over many shots?",
+        options: [
+          "Sampler",
+          "Estimator",
+          "Session",
+          "CircuitSampler"
+        ],
+        answer: 0,
+        explanation: "Sampler is designed for repeated measurement/shot-based sampling of circuits."
+      },
+      {
+        text: "What does calling run() on a SamplerV2 instance actually do?",
+        options: [
+          "compute expectation values",
+          "generate measurement counts from the given circuits",
+          "optimize the circuit layout",
+          "reset the qubits"
+        ],
+        answer: 1,
+        explanation: "SamplerV2.run executes the supplied PUBs and returns measurement-based results (counts/bitarrays)."
+      },
+      {
+        text: "Which gate rotates a qubit about the Z-axis by \u03c0/2?",
+        options: [
+          "RZ(\u03c0/2)",
+          "RX(\u03c0/2)",
+          "RY(\u03c0/2)",
+          "H-gate"
+        ],
+        answer: 0,
+        explanation: "RZ(\u03b8) is the parameterized Z-axis rotation, so RZ(\u03c0/2) rotates by \u03c0/2 about Z."
+      },
+      {
+        text: "Starting from |0\u27e9, what state results from applying H, then T, then H in sequence?",
+        options: [
+          "|0\u27e9",
+          "|1\u27e9",
+          "(|0\u27e9 + e^{i\u03c0/4}|1\u27e9)/\u221a2",
+          "(|0\u27e9 \u2212 e^{i\u03c0/4}|1\u27e9)/\u221a2"
+        ],
+        answer: 2,
+        explanation: "H|0\u27e9 gives |+\u27e9; T adds a relative phase of e^{i\u03c0/4} to the |1\u27e9 component; the final H then recombines the amplitudes into this superposition."
+      },
+      {
+        text: "Which Qiskit Runtime object keeps a connection to a backend 'warm' across several related jobs?",
+        options: [
+          "Session",
+          "Sampler",
+          "Estimator",
+          "Circuit"
+        ],
+        answer: 0,
+        explanation: "A Session reserves backend time so multiple related jobs can run back-to-back without re-queuing."
+      },
+      {
+        text: "Which sampler.options field sets how many shots a circuit runs for?",
+        options: [
+          "default_shots",
+          "num_runs",
+          "precision",
+          "repetitions"
+        ],
+        answer: 0,
+        explanation: "default_shots configures the shot count used by SamplerV2 when a PUB doesn't specify its own."
+      },
+      {
+        text: "After applying RX(\u03c0/2) to |0\u27e9, what is the probability of measuring |1\u27e9?",
+        options: [
+          "0.5",
+          "0.25",
+          "0.75",
+          "1"
+        ],
+        answer: 0,
+        explanation: "P(|1\u27e9) = sin\u00b2(\u03b8/2); for \u03b8=\u03c0/2 that's sin\u00b2(\u03c0/4) = 0.5."
+      },
+      {
+        text: "Which of these Qiskit objects is used to represent and store quantum state amplitudes?",
+        options: [
+          "Statevector",
+          "ClassicalRegister",
+          "Sampler",
+          "a primitive"
+        ],
+        answer: 0,
+        explanation: "Statevector holds the complex amplitude vector describing a quantum state."
+      },
+      {
+        text: "How many qubits does it take to represent 8 distinct basis states?",
+        options: [
+          "2",
+          "3",
+          "4",
+          "8"
+        ],
+        answer: 1,
+        explanation: "n qubits give 2\u207f basis states; 2\u00b3 = 8, so 3 qubits are needed."
+      },
+      {
+        text: "Which technique reduces noise in results without performing full quantum error correction?",
+        options: [
+          "Zero Noise Extrapolation",
+          "Pauli twirling",
+          "Dynamical decoupling",
+          "Both A and C"
+        ],
+        answer: 3,
+        explanation: "ZNE and dynamical decoupling are both error-mitigation techniques that reduce noise impact without the overhead of full error correction."
+      },
+      {
+        text: "Which Qiskit tool lets you simulate circuits purely with classical computation?",
+        options: [
+          "Aer simulator",
+          "Sampler",
+          "Estimator",
+          "Session"
+        ],
+        answer: 0,
+        explanation: "Qiskit Aer provides classical, high-performance simulators for quantum circuits."
+      },
+      {
+        text: "Which code correctly builds a 2-qubit GHZ (Bell) state?",
+        options: [
+          "qc.h(0); qc.cx(0,1)",
+          "qc.x(0); qc.cx(0,1)",
+          "qc.h(0); qc.h(1)",
+          "qc.rx(\u03c0/2,0); qc.ry(\u03c0/2,1)"
+        ],
+        answer: 0,
+        explanation: "A Hadamard on qubit 0 followed by a CNOT entangles the pair into a Bell state."
+      },
+      {
+        text: "What does applying a T\u2020 (T-dagger) gate to |1\u27e9 produce?",
+        options: [
+          "|1\u27e9 with a \u2212\u03c0/4 phase",
+          "|0\u27e9",
+          "|1\u27e9 with a \u03c0/4 phase",
+          "|0\u27e9 with a \u03c0/2 phase"
+        ],
+        answer: 0,
+        explanation: "T\u2020 is the inverse of T, so it applies the conjugate phase e^{\u2212i\u03c0/4} to |1\u27e9."
+      },
+      {
+        text: "Which of the following is a classical data type defined in OpenQASM 3?",
+        options: [
+          "qubit",
+          "complex",
+          "int",
+          "operator"
+        ],
+        answer: 2,
+        explanation: "OpenQASM 3 defines classical types like int, uint, float, bool, and bit; qubit is a quantum type, not classical."
+      },
+      {
+        text: "Which function writes a Qiskit circuit out to an OpenQASM 3 file?",
+        options: [
+          "qc.to_qasm(file)",
+          "qiskit.qasm3.dump(qc, file)",
+          "qc.export(file)",
+          "qasm3.save(qc, file)"
+        ],
+        answer: 1,
+        explanation: "The qiskit.qasm3 module provides dump()/dumps() for exporting circuits to OpenQASM 3."
+      },
+      {
+        text: "Which method produces a histogram view of measurement results?",
+        options: [
+          "draw(output='mpl')",
+          "plot_state_qsphere",
+          "plot_histogram",
+          "visualize_counts"
+        ],
+        answer: 2,
+        explanation: "plot_histogram() from qiskit.visualization renders counts as a bar histogram."
+      },
+      {
+        text: "In a 2-qubit circuit, which operation entangles qubits 0 and 1?",
+        options: [
+          "X(1)",
+          "H(0)",
+          "CX(0,1)",
+          "RZ(\u03c0/2)"
+        ],
+        answer: 2,
+        explanation: "A controlled-X (CNOT) between two qubits is what creates entanglement; H or single-qubit rotations alone do not."
+      },
+      {
+        text: "What does reset(q[0]) do to a circuit?",
+        options: [
+          "measures qubit 0",
+          "sets qubit 0 to |1\u27e9",
+          "sets qubit 0 to |0\u27e9",
+          "applies a Hadamard to qubit 0"
+        ],
+        answer: 2,
+        explanation: "reset() forces the target qubit back into the |0\u27e9 ground state."
+      },
+      {
+        text: "Which primitive is the right choice for computing expectation values of several observables on one circuit?",
+        options: [
+          "Session",
+          "Sampler",
+          "Estimator",
+          "CircuitSampler"
+        ],
+        answer: 2,
+        explanation: "Estimator is purpose-built for expectation-value calculations against one or more observables."
+      },
+      {
+        text: "Which Qiskit object lets you build circuits with symbolic, parameterized gates?",
+        options: [
+          "ClassicalRegister",
+          "Parameter",
+          "Statevector",
+          "Backend"
+        ],
+        answer: 1,
+        explanation: "Parameter (and ParameterVector) objects act as placeholders you bind to numeric values later."
+      },
+      {
+        text: "After applying RY(\u03c0/2) to |0\u27e9, what is the probability of measuring |1\u27e9?",
+        options: [
+          "1",
+          "0.1464",
+          "0.8536",
+          "0.5"
+        ],
+        answer: 2,
+        explanation: "In general P(|1\u27e9) = sin\u00b2(\u03b8/2); for \u03b8=\u03c0/2 the textbook value is 0.5 \u2014 worth double-checking this one against your own calculation."
+      },
+      {
+        text: "Which call runs a single circuit through SamplerV2?",
+        options: [
+          "sampler.execute(qc)",
+          "sampler.run(qc, repetitions=1024)",
+          "sampler.run([qc])",
+          "sampler.apply(qc)"
+        ],
+        answer: 2,
+        explanation: "SamplerV2.run() expects an iterable of PUBs, so a single circuit is still passed as a one-element list."
+      },
+      {
+        text: "Which gate combination produces a Bell state?",
+        options: [
+          "H(0); CX(0,1)",
+          "X(0); CX(0,1)",
+          "H(1); CX(1,0)",
+          "RX(\u03c0/2,0); RY(\u03c0/2,1)"
+        ],
+        answer: 0,
+        explanation: "Hadamard on the control qubit followed by CNOT is the standard Bell-state recipe."
+      },
+      {
+        text: "Which call returns the raw measurement counts from a completed job?",
+        options: [
+          "sampler.run()",
+          "qc.measure_all()",
+          "plot_histogram()",
+          "job.result().get_counts(qc)"
+        ],
+        answer: 3,
+        explanation: "get_counts() on the job result pulls the dictionary of bitstring \u2192 count."
+      },
+      {
+        text: "Which instruction rotates qubit 0 about the Y-axis by \u03b8?",
+        options: [
+          "RX(\u03b8,0)",
+          "RY(\u03b8,0)",
+          "RZ(\u03b8,0)",
+          "T"
+        ],
+        answer: 1,
+        explanation: "RY(\u03b8, qubit) applies a Y-axis rotation of angle \u03b8 to the given qubit."
+      },
+      {
+        text: "Which call bundles multiple circuits together for batch execution?",
+        options: [
+          "sampler.run([...])",
+          "execute([...])",
+          "Estimator.run([...])",
+          "Session.run([...])"
+        ],
+        answer: 1,
+        explanation: "The legacy execute([...]) helper accepts a list of circuits to run together (modern code typically uses Batch mode with a primitive instead)."
+      },
+      {
+        text: "What is Statevector mainly used to hold in Qiskit?",
+        options: [
+          "quantum state amplitudes",
+          "classical bits",
+          "qubit control signals",
+          "batched jobs"
+        ],
+        answer: 0,
+        explanation: "Statevector stores the complex amplitude vector of a quantum state for analysis or simulation."
+      },
+      {
+        text: "What is the net effect of applying a Hadamard gate twice in a row to a qubit?",
+        options: [
+          "it applies a T gate",
+          "it flips the qubit",
+          "it creates a superposition",
+          "it returns the qubit to its original state"
+        ],
+        answer: 3,
+        explanation: "H is self-inverse (H\u00b2 = I), so applying it twice undoes the first application."
+      },
+      {
+        text: "Which option historically controlled the transpiler optimization level inside execute()?",
+        options: [
+          "optimization_factor",
+          "optimization_level",
+          "optimization_scale",
+          "optimization_mode"
+        ],
+        answer: 1,
+        explanation: "optimization_level is the parameter name, accepting values 0 through 3."
+      },
+      {
+        text: "Which method draws a circuit as a text-based diagram?",
+        options: [
+          "plot_histogram()",
+          "qc.draw(output='mpl')",
+          "qc.draw(output='text')",
+          "plot_state_qsphere()"
+        ],
+        answer: 2,
+        explanation: "qc.draw(output='text') renders an ASCII-art circuit diagram in the terminal."
+      },
+      {
+        text: "Which primitive supports both quantum evaluation and classical post-processing of results?",
+        options: [
+          "Estimator",
+          "Sampler",
+          "Session",
+          "ClassicalSimulator"
+        ],
+        answer: 0,
+        explanation: "Estimator combines running circuits with classical post-processing (applying observables) to return expectation values."
+      },
+      {
+        text: "Which statement about OpenQASM 3 is accurate?",
+        options: [
+          "it supports classical control flow",
+          "it can't represent qubit registers",
+          "it doesn't support floating point",
+          "it only supports single-qubit gates"
+        ],
+        answer: 0,
+        explanation: "OpenQASM 3 adds classical control-flow constructs (if/for/while) that OpenQASM 2 lacked."
+      },
+      {
+        text: "What does plot_state_qsphere(state) do?",
+        options: [
+          "optimizes a circuit",
+          "counts measurement outcomes",
+          "visualizes a quantum state's amplitudes on a sphere",
+          "applies error mitigation"
+        ],
+        answer: 2,
+        explanation: "The Q-sphere plot shows each basis state's amplitude (size) and phase (color) on a spherical layout."
+      },
+      {
+        text: "Which sequence prepares the |+\u27e9 = (|0\u27e9+|1\u27e9)/\u221a2 state?",
+        options: [
+          "Z|0\u27e9",
+          "X|0\u27e9",
+          "Y|0\u27e9",
+          "H|0\u27e9"
+        ],
+        answer: 3,
+        explanation: "A Hadamard applied to |0\u27e9 is the standard way to create the |+\u27e9 superposition."
+      },
+      {
+        text: "Which Qiskit Aer object represents a noise model for simulation?",
+        options: [
+          "Circuit",
+          "Statevector",
+          "Sampler",
+          "NoiseModel"
+        ],
+        answer: 3,
+        explanation: "NoiseModel (from qiskit_aer.noise) packages error channels that can be attached to a simulator backend."
+      },
+      {
+        text: "Which instruction measures a qubit and stores the result in a classical bit?",
+        options: [
+          "qc.cx(q0,q1)",
+          "qc.reset(q)",
+          "qc.h(q)",
+          "qc.measure(q, c)"
+        ],
+        answer: 3,
+        explanation: "measure(qubit, clbit) is the instruction that performs a measurement and writes the outcome to a classical bit."
+      },
+      {
+        text: "Which approach runs multiple circuits together through Qiskit Runtime?",
+        options: [
+          "sampler.run([...])",
+          "Session.run([...])",
+          "execute([...])",
+          "Estimator.run([...])"
+        ],
+        answer: 1,
+        explanation: "A Runtime Session can host a sequence/batch of related jobs run back-to-back on a reserved backend."
+      },
+      {
+        text: "Which sequence of operations builds a 3-qubit GHZ state?",
+        options: [
+          "X(0); CX(0,1); H(2)",
+          "H(0); CX(1,2); X(2)",
+          "H(0); CX(0,1); CX(0,2)",
+          "RX(\u03c0/2,0); RY(\u03c0/2,1); RZ(\u03c0/2,2)"
+        ],
+        answer: 2,
+        explanation: "A Hadamard on the first qubit followed by CNOTs from it to each other qubit entangles all three into a GHZ state."
+      },
+      {
+        text: "Which Qiskit class handles optimized compilation of a circuit for a target backend?",
+        options: [
+          "Session",
+          "Sampler",
+          "Estimator",
+          "Transpiler"
+        ],
+        answer: 3,
+        explanation: "The Transpiler rewrites/optimizes circuits to match a backend's native gate set and connectivity."
+      },
+      {
+        text: "Starting from |+\u27e9 = (|0\u27e9+|1\u27e9)/\u221a2, what state results from applying RZ(\u03c0)?",
+        options: [
+          "(|0\u27e9+|1\u27e9)/\u221a2",
+          "(|0\u27e9\u2212|1\u27e9)/\u221a2",
+          "|0\u27e9",
+          "|1\u27e9"
+        ],
+        answer: 1,
+        explanation: "RZ(\u03c0) applies a relative phase of \u22121 to the |1\u27e9 component, turning |+\u27e9 into |\u2212\u27e9."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>

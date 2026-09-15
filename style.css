@@ -699,6 +699,20 @@ code {
   margin-top: .5rem;
 }
 
+/* ---------- Question code blocks ---------- */
+.q-code {
+  background: #161616;
+  color: #f4f4f4;
+  padding: .85rem 1rem;
+  border-radius: 6px;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: .82rem;
+  overflow-x: auto;
+  line-height: 1.55;
+  margin: .6rem 0;
+  white-space: pre;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 600px) {
   .site-header .inner { height: 52px; }

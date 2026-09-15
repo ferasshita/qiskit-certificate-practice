@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 12 – Official Sample Test Walkthrough, Part 1 | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 12</div>
+      <h1>Official Sample Test Walkthrough, Part 1</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 10 Questions</span>
+        <span>&#x23F1; ~15 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Source note ── -->
+  <div class="inner" style="max-width:900px;margin:1rem auto 0;padding:0 1rem;">
+    <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem 1rem;">
+      Based on the first 10 questions of IBM's own official Sample Test for the v2.X Developer – Associate
+      exam, as walked through by a community explainer blog. A few of the original questions asked you to
+      pick the matching diagram/circuit image among four options — those have been rewritten here as
+      text-based comprehension questions covering the same underlying concept, since this site's quiz
+      format is text-only.
+    </p>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 10 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 10</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "Which snippet produces this matrix?<pre class=\"q-code\">[[ 1.+0.j  0.+0.j  0.+0.j  0.+0.j]\n [ 0.+0.j -1.+0.j  0.+0.j  0.+0.j]\n [ 0.+0.j  0.+0.j  1.+0.j  0.+0.j]\n [ 0.+0.j  0.+0.j  0.+0.j -1.+0.j]]</pre>",
+        options: [
+          "<pre class=\"q-code\">p = Pauli(&#x27;IZ&#x27;)\nprint(p.to_matrix())</pre>",
+          "<pre class=\"q-code\">p = Pauli(&#x27;-II&#x27;)\nprint(p.to_matrix())</pre>",
+          "<pre class=\"q-code\">p = Pauli(&#x27;-ZI&#x27;)\nprint(p.to_matrix())</pre>",
+          "<pre class=\"q-code\">p = Pauli(&#x27;ZZ&#x27;)\nprint(p.to_matrix())</pre>"
+        ],
+        answer: 0,
+        explanation: "Qiskit Pauli labels are tensor products read right-to-left onto qubits, so 'IZ' means I\u2297Z. Working out I\u2297Z gives diag(1,-1,1,-1), which matches the target matrix; the other three options (-I\u2297I, -Z\u2297I, Z\u2297Z) all produce different diagonals."
+      },
+      {
+        text: "Applying a T-gate to a qubit in state |1\u27e9 introduces which phase?",
+        options: [
+          "\u03c0/2 phase",
+          "-\u03c0/2 phase",
+          "-\u03c0/4 phase",
+          "\u03c0/4 phase"
+        ],
+        answer: 3,
+        explanation: "T, S, and Z are all Z-axis rotation gates that leave |0\u27e9 alone; they add a phase of \u03c0/4, \u03c0/2, and \u03c0 respectively to |1\u27e9. T is the smallest of the three, at \u03c0/4."
+      },
+      {
+        text: "Given this snippet, what's the approximate probability of measuring a 1?<pre class=\"q-code\">from qiskit import QuantumCircuit\nimport numpy as np\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.ry(np.pi / 2, 0)\nqc.measure_all()</pre>",
+        options: [
+          "0.8536",
+          "1.0",
+          "0.1464",
+          "0.5"
+        ],
+        answer: 3,
+        explanation: "reset(0) puts the qubit at |0\u27e9 (\u03b8=0 on the Bloch sphere). RY(\u03c0/2) then tilts it exactly halfway between the poles, so measuring 0 or 1 are equally likely \u2014 0.5 each."
+      },
+      {
+        text: "In this dynamic circuit, what happens to q1 if the measured value of c0 turns out to be 1?<pre class=\"q-code\">from qiskit import *\nqubits = QuantumRegister(2)\nclbits = ClassicalRegister(2)\ncircuit = QuantumCircuit(qubits, clbits)\n(q0, q1) = qubits\n(c0, c1) = clbits\ncircuit.h(q0)\ncircuit.measure(q0, c0)\nwith circuit.if_test((c0, 1)) as else_:\n    circuit.h(q1)\nwith else_:\n    circuit.x(q1)\ncircuit.measure(q1, c1)</pre>",
+        options: [
+          "a Hadamard gate is applied to q1",
+          "an X gate is applied to q1",
+          "both H and X are applied to q1",
+          "nothing happens to q1"
+        ],
+        answer: 0,
+        explanation: "if_test((c0, 1)) opens the 'if c0 == 1' branch, which contains circuit.h(q1); the paired else_ block (applying X) only runs when c0 is 0."
+      },
+      {
+        text: "Given this snippet, which two 3-qubit basis states will show up as histogram bars?<pre class=\"q-code\">from qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_histogram\nstate = Statevector([0.+0.j, 0.+0.j, 0.70710678+0.j, 0.+0.j,\n                     0.+0.j, -0.70710678+0.j, 0.+0.j, 0.+0.j])\ncounts = state.sample_counts(shots=1024)\nplot_histogram(counts)</pre>",
+        options: [
+          "|010\u27e9 and |101\u27e9",
+          "|001\u27e9 and |110\u27e9",
+          "|000\u27e9 and |111\u27e9",
+          "|011\u27e9 and |100\u27e9"
+        ],
+        answer: 0,
+        explanation: "The 8-entry vector's nonzero amplitudes sit at index 2 and index 5, which correspond to the 3-qubit basis states |010\u27e9 and |101\u27e9; both have the same magnitude, so each appears with equal probability."
+      },
+      {
+        text: "Which code fragment produces a 2-qubit state where |00\u27e9 and |11\u27e9 have equal magnitude and the same (uninverted) relative phase \u2014 i.e. (|00\u27e9 + |11\u27e9)/\u221a2?",
+        options: [
+          "<pre class=\"q-code\">qc = QuantumCircuit(2)\nqc.h(0)\nqc.z(0)\nqc.cx(0, 1)\nstate = Statevector(qc)\nplot_state_qsphere(state)</pre>",
+          "<pre class=\"q-code\">qc = QuantumCircuit(2)\nqc.h(0)\nqc.z(0)\nqc.x(1)\nqc.cx(0, 1)\nstate = Statevector(qc)\nplot_state_qsphere(state)</pre>",
+          "<pre class=\"q-code\">qc = QuantumCircuit(2)\nqc.x(1)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector(qc)\nplot_state_qsphere(state)</pre>",
+          "<pre class=\"q-code\">qc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector(qc)\nplot_state_qsphere(state)</pre>"
+        ],
+        answer: 3,
+        explanation: "Starting from |00\u27e9, H on qubit 0 gives (|0\u27e9+|1\u27e9)/\u221a2 \u2297 |0\u27e9; CX(0,1) then correlates the qubits into (|00\u27e9+|11\u27e9)/\u221a2 with no extra phase flip. Adding a Z (options A/B) flips the relative sign to a minus, and adding an X before the CX (options B/C) changes which basis states get populated."
+      },
+      {
+        text: "Given this setup, which snippet creates a rotation gate whose angle is left undefined until later?<pre class=\"q-code\">from qiskit.circuit import QuantumCircuit, Parameter, ParameterExpression\nqc = QuantumCircuit(1)</pre>",
+        options: [
+          "<pre class=\"q-code\">theta = 3.14\nqc.rx(3.14, 0)</pre>",
+          "<pre class=\"q-code\">theta = Parameter(&#x27;theta&#x27;)\nqc.rx(theta, 0)</pre>",
+          "<code>qc.rx(&#x27;theta&#x27;, 0)</code>",
+          "<code>qc.rx(ParameterExpression(&#x27;theta&#x27;), 0)</code>"
+        ],
+        answer: 1,
+        explanation: "Parameter('theta') creates a genuine symbolic placeholder that can later be bound to a numeric value with assign_parameters(); passing a plain string or ParameterExpression directly (as in C and D) isn't valid, and A hardcodes a fixed numeric angle rather than leaving it undefined."
+      },
+      {
+        text: "Which type of register stores the result of a measured circuit?",
+        options: [
+          "Ancilla register",
+          "Quantum register",
+          "Classical register",
+          "Circuit register"
+        ],
+        answer: 2,
+        explanation: "A ClassicalRegister holds the classical bits that measurement results get written into. QuantumRegister holds qubits, Ancilla registers are auxiliary qubits typically used for algorithms/error correction, and there's no such thing as a 'Circuit register' in Qiskit."
+      },
+      {
+        text: "Given this pass-manager setup, why would generate_preset_pass_manager need to modify the circuit before it can run?<pre class=\"q-code\">from qiskit import QuantumCircuit\nfrom qiskit import generate_preset_pass_manager\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0,1)\npass_manager = generate_preset_pass_manager(\n    optimization_level=3,\n    coupling_map=[[0, 1], [1, 2]],\n    basis_gates=[&#x27;h&#x27;, &#x27;swap&#x27;, &#x27;cx&#x27;],\n    initial_layout=[0, 2]\n)\ntqc = pass_manager.run(qc)</pre>",
+        options: [
+          "because initial_layout=[0, 2] places the circuit's two qubits on physical qubits 0 and 2, which the coupling map doesn't connect directly, so a SWAP is needed to route the CX",
+          "because optimization_level=3 always inserts extra gates regardless of connectivity",
+          "because the H gate isn't a valid basis gate here, so it must be removed",
+          "no modification is needed \u2014 tqc will be identical to qc"
+        ],
+        answer: 0,
+        explanation: "The coupling map only connects (0,1) and (1,2), but initial_layout puts the circuit's two qubits on physical qubits 0 and 2. Since qc.cx(0,1) needs those two qubits adjacent, the pass manager inserts a SWAP gate to route one of them into position before the CX can execute."
+      },
+      {
+        text: "Which set correctly lists the three genuine Qiskit Runtime job execution modes?",
+        options: [
+          "session, batch, and single job",
+          "classical, parallel, and quantum",
+          "session, classical, and batch",
+          "parallel, single job, and quantum"
+        ],
+        answer: 0,
+        explanation: "Qiskit Runtime's three execution modes are session (a reserved time slot for iterative work), batch (multiple independent jobs submitted together, order not guaranteed), and single job (the simplest mode, for one-off runs)."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>

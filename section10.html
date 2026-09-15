@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section 10 – Code &amp; Runtime Practice Test | IBM Quantum Practice</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- MathJax configuration -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">
+        <div class="logo-icon">IBM</div>
+        <div>
+          <strong>Quantum Practice</strong>
+          <span>Qiskit v2.X Developer</span>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">&#8592; All Sections</a>
+    </div>
+  </header>
+
+  <!-- ── Page Banner ── -->
+  <div class="page-banner">
+    <div class="inner">
+      <div class="section-tag">Section 10</div>
+      <h1>Code &amp; Runtime Practice Test</h1>
+      <div class="meta">
+        <span>&#x1F4CB; 30 Questions</span>
+        <span>&#x23F1; ~35 min</span>
+        <span>&#x1F3AF; Pass threshold: 70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Source note ── -->
+  <div class="inner" style="max-width:900px;margin:1rem auto 0;padding:0 1rem;">
+    <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem 1rem;">
+      Inspired by a community-written Qiskit v2.X practice set. This set leans heavily on reading real
+      Qiskit code fragments — Pauli/Statevector operations, Runtime primitives (SamplerV2/EstimatorV2),
+      transpilation, and OpenQASM 3 export. Two originally multi-select questions from the source were
+      converted to single-best-answer format to fit this site's quiz engine.
+    </p>
+  </div>
+
+  <!-- ── Progress Bar ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span id="progress-label">0 / 30 answered</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quiz ── -->
+  <div class="quiz-wrap">
+
+    <!-- Score Panel (hidden until submitted) -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-num">— / 30</div>
+      <div class="score-label">Your score &nbsp;|&nbsp; <span id="score-pct">—</span></div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+      <p style="font-size:.88rem;color:var(--text-muted);">Review highlighted answers and explanations below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btn-submit" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  id="btn-reset"  onclick="QuizEngine.reset()" style="display:none">&#x21BA; Reset Quiz</button>
+    </div>
+
+    <!-- Questions rendered here by quiz.js -->
+    <div id="quiz-container"></div>
+
+    <!-- Bottom action buttons -->
+    <div class="action-bar" style="margin-top:2rem;">
+      <button class="btn btn-primary" onclick="QuizEngine.check()">&#x2713; Check Answers</button>
+      <button class="btn btn-outline"  onclick="QuizEngine.reset()">&#x21BA; Reset Quiz</button>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>Practice resource for the IBM Certified Quantum Computation using Qiskit v2.X Developer – Associate certification. &copy; 2025</p>
+  </footer>
+
+  <!-- ── Question Data ── -->
+  <script>
+    var QUESTIONS = [
+      {
+        text: "Which code snippet would generate this matrix output?<pre class=\"q-code\">[[ 0.+0.j  1.+0.j  0.+0.j  0.+0.j]\n [ 1.+0.j  0.+0.j  0.+0.j  0.+0.j]\n [ 0.+0.j  0.+0.j  0.+0.j -1.+0.j]\n [ 0.+0.j  0.+0.j -1.+0.j  0.+0.j]]</pre>",
+        options: [
+          "<pre class=\"q-code\">p = Pauli(&#x27;IZ&#x27;)\nprint(p.to_matrix())</pre>",
+          "<pre class=\"q-code\">p = Pauli(&#x27;ZX&#x27;)\nprint(p.to_matrix())</pre>",
+          "<pre class=\"q-code\">p = Pauli(&#x27;XI&#x27;)\nprint(p.to_matrix())</pre>",
+          "<pre class=\"q-code\">p = Pauli(&#x27;IX&#x27;)\nprint(p.to_matrix())</pre>"
+        ],
+        answer: 3,
+        explanation: "Qiskit's Pauli string labels are ordered so the rightmost character acts on qubit 0; tracing through the tensor product for each label lets you match it to the given matrix."
+      },
+      {
+        text: "Applying the S gate to a qubit in state |1\u27e9 introduces what phase?",
+        options: [
+          "\u03c0/4",
+          "\u03c0/2",
+          "\u03c0",
+          "3\u03c0/2"
+        ],
+        answer: 1,
+        explanation: "S = diag(1, i) = diag(1, e^{i\u03c0/2}), so it multiplies the |1\u27e9 amplitude by a phase of \u03c0/2."
+      },
+      {
+        text: "Given this snippet, what is the approximate probability of measuring a 1?<pre class=\"q-code\">from qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.ry(np.pi, 0)\nqc.measure_all()</pre>",
+        options: [
+          "0.5",
+          "0.0",
+          "1.0",
+          "0.25"
+        ],
+        answer: 2,
+        explanation: "reset(0) puts the qubit at |0\u27e9; RY(\u03c0) then fully rotates it to |1\u27e9, so measuring 1 happens with certainty."
+      },
+      {
+        text: "Which snippet correctly plots a single qubit's Bloch-sphere state after an X gate?",
+        options: [
+          "<pre class=\"q-code\">from qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.x(0)\nstate = Statevector(qc)\nplot_bloch_multivector(state)</pre>",
+          "<pre class=\"q-code\">from qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.x(0)\nplot_bloch_multivector(qc)</pre>",
+          "<pre class=\"q-code\">from qiskit.visualization import plot_bloch_multivector\n\nplot_bloch_multivector([1, 0])</pre>",
+          "<pre class=\"q-code\">from qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nstate = Statevector(qc)\nplot_bloch_multivector(state)</pre>"
+        ],
+        answer: 0,
+        explanation: "You need to build the circuit, apply the X gate, convert it to a Statevector, and hand that Statevector (not the raw circuit) to plot_bloch_multivector."
+      },
+      {
+        text: "Given this snippet, which two basis states show up as histogram bars?<pre class=\"q-code\">from qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_histogram\n\nstate = Statevector([0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,\n                     0.70710678+0.j, 0.+0.j, 0.70710678+0.j, 0.+0.j])\ncounts = state.sample_counts(shots=1024)\nplot_histogram(counts)</pre>",
+        options: [
+          "|100\u27e9 and |110\u27e9",
+          "|001\u27e9 and |011\u27e9",
+          "|000\u27e9 and |010\u27e9",
+          "|101\u27e9 and |111\u27e9"
+        ],
+        answer: 0,
+        explanation: "The nonzero amplitudes sit at index 4 and index 6 of the 8-entry vector, which correspond to the 3-qubit basis states |100\u27e9 and |110\u27e9."
+      },
+      {
+        text: "Which draw() call produces a plain text circuit diagram with no extra libraries needed?",
+        options: [
+          "<code>qc.draw(output=&quot;latex&quot;)</code>",
+          "<code>qc.draw(output=&quot;mpl&quot;)</code>",
+          "<code>qc.draw(output=&quot;text&quot;)</code>",
+          "<code>qc.draw(output=&quot;svg&quot;)</code>"
+        ],
+        answer: 2,
+        explanation: "output=\"text\" renders an ASCII-art diagram directly to the console with no matplotlib/LaTeX dependency."
+      },
+      {
+        text: "Which snippet correctly builds the 3-qubit GHZ state (|000\u27e9 + |111\u27e9)/\u221a2?",
+        options: [
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(0, 2)</pre>",
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.h(1)\nqc.h(2)</pre>",
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.cx(0, 1)\nqc.cx(1, 2)</pre>",
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(1, 2)\nqc.cx(0, 1)</pre>"
+        ],
+        answer: 0,
+        explanation: "A Hadamard on qubit 0 followed by CNOTs from qubit 0 to each of the other qubits entangles all three into the GHZ state."
+      },
+      {
+        text: "Given this parameterized circuit, which call correctly binds \u03c0/2 to theta and returns a new bound circuit?<pre class=\"q-code\">from qiskit.circuit import QuantumCircuit, Parameter\nimport numpy as np\n\ntheta = Parameter(&#x27;theta&#x27;)\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)</pre>",
+        options: [
+          "<code>qc.assign_parameters({theta: np.pi / 2})</code>",
+          "<code>qc.bind_parameter(&#x27;theta&#x27;, np.pi / 2)</code>",
+          "<code>qc.set_parameters([np.pi / 2])</code>",
+          "<code>theta.assign(np.pi / 2)</code>"
+        ],
+        answer: 0,
+        explanation: "assign_parameters() takes a dict mapping Parameter objects to values and returns a new circuit with them substituted in."
+      },
+      {
+        text: "Given this pass-manager setup, which statement about the transpiled circuit tqc is correct?<pre class=\"q-code\">from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\npm = generate_preset_pass_manager(\n    optimization_level=1,\n    coupling_map=[[0, 1], [1, 2]],\n    basis_gates=[&#x27;x&#x27;, &#x27;cx&#x27;, &#x27;rz&#x27;, &#x27;sx&#x27;],\n    initial_layout=[0, 1]\n)\ntqc = pm.run(qc)</pre>",
+        options: [
+          "tqc will only contain gates from ['x','cx','rz','sx'], since the pass manager translates everything to that basis",
+          "tqc will be identical to qc, because optimization_level=1 makes no changes to a circuit this small",
+          "tqc will contain a SWAP gate inserted by the router, since qubits 0 and 1 aren't connected in the coupling map",
+          "tqc will raise a transpilation error because H isn't in the basis gate set and can't be decomposed"
+        ],
+        answer: 0,
+        explanation: "The pass manager's basis-translation stage rewrites every gate into the specified basis_gates, so H and CX both get decomposed into x/cx/rz/sx equivalents."
+      },
+      {
+        text: "Which set of three items correctly lists valid Qiskit Runtime job execution modes?",
+        options: [
+          "Session, Batch, and a single job",
+          "Classical, Parallel, and Pipeline",
+          "Session, Classical, and Batch",
+          "Parallel, Pipeline, and a single job"
+        ],
+        answer: 0,
+        explanation: "Qiskit Runtime supports Session, Batch, and single-job execution modes; 'Classical', 'Parallel', and 'Pipeline' aren't Runtime execution-mode names."
+      },
+      {
+        text: "What is the purpose of a Qiskit Runtime Session?",
+        options: [
+          "to automatically generate quantum algorithms from classical inputs",
+          "to group a set of quantum calls so the backend stays reserved for repeated, interactive use",
+          "to compile and optimize circuits for several backends in parallel",
+          "to visualize quantum results in real time during execution"
+        ],
+        answer: 1,
+        explanation: "A Session reserves dedicated backend time so a sequence of related, iterative jobs can run without re-queuing each time."
+      },
+      {
+        text: "Which snippet correctly opens a Qiskit Runtime Session?",
+        options: [
+          "<pre class=\"q-code\">from qiskit_ibm_runtime import Session\nsession = Session(system=&#x27;ibm_foo&#x27;)</pre>",
+          "<pre class=\"q-code\">from qiskit_ibm_runtime import Session, QiskitRuntimeService\nservice = QiskitRuntimeService()\nbackend = service.least_busy(operational=True, simulator=False)\nsession = Session(backend=backend)</pre>",
+          "<pre class=\"q-code\">from qiskit_ibm_runtime import execute, QiskitRuntimeService\nservice = QiskitRuntimeService()\nsession = execute(service=service)</pre>",
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit\nsession = QuantumCircuit(2).open_session()</pre>"
+        ],
+        answer: 1,
+        explanation: "A Session is constructed by passing a backend obtained from a QiskitRuntimeService instance."
+      },
+      {
+        text: "What does sampler.options.default_shots control in SamplerV2?<pre class=\"q-code\">from qiskit_ibm_runtime import SamplerV2 as Sampler\nsampler = Sampler(mode=backend)\nsampler.options.default_shots = 1024</pre>",
+        options: [
+          "the number of qubits measured per circuit run",
+          "the number of randomizations applied via Pauli twirling",
+          "the number of times the circuit is executed and measured",
+          "the number of dynamical decoupling sequences inserted"
+        ],
+        answer: 2,
+        explanation: "default_shots sets how many shots (repeated executions/measurements) are used for a PUB that doesn't specify its own shot count."
+      },
+      {
+        text: "Given this setup, which is a valid way to call run() on a SamplerV2 instance?<pre class=\"q-code\">from qiskit_ibm_runtime import SamplerV2\nsampler = SamplerV2(mode=backend)</pre>",
+        options: [
+          "<code>sampler.run([isa_circuit])</code>",
+          "<code>sampler.run(distribution, isa_circuit)</code>",
+          "<code>sampler.run(isa_circuit, distribution=&#x27;gauss&#x27;)</code>",
+          "<code>sampler.run([isa_circuit1, isa_circuit2], runs=1024)</code>"
+        ],
+        answer: 0,
+        explanation: "run() expects an iterable of PUBs (circuits, or circuit/parameter tuples), so even a single circuit is passed inside a list."
+      },
+      {
+        text: "Which describes the correct tuple format for a PUB used with EstimatorV2?",
+        options: [
+          "<code>pub = (circuit, observable, parameter_values, backend)</code>",
+          "<code>pub = (circuit, observable, shots, optimization_level)</code>",
+          "<code>pub = (circuit, observable, parameter_values, precision)</code>",
+          "<code>pub = (circuit, observable, resilience_level, noise_model)</code>"
+        ],
+        answer: 2,
+        explanation: "An Estimator PUB is (circuit, observables, parameter_values, precision) \u2014 precision, not shots, controls Estimator sampling."
+      },
+      {
+        text: "If EstimatorV2's precision parameter is doubled (e.g. from 0.015625 to 0.03125), what happens to the shot count?",
+        options: [
+          "it increases quadratically",
+          "it increases exponentially",
+          "it has no effect on shot count",
+          "it decreases"
+        ],
+        answer: 3,
+        explanation: "Estimator's required shots scale roughly as 1/precision\u00b2, so a looser (larger) precision value needs fewer shots."
+      },
+      {
+        text: "Which error mitigation technique is exposed through Qiskit Runtime's resilience options?",
+        options: [
+          "Pauli twirling",
+          "dynamical decoupling",
+          "Zero Noise Extrapolation (ZNE)",
+          "full quantum error correction"
+        ],
+        answer: 2,
+        explanation: "ZNE is one of the resilience-level options in Qiskit Runtime; Pauli twirling and dynamical decoupling are configured separately, and full QEC isn't offered at all."
+      },
+      {
+        text: "Which pair of things does calling session.details() return, for a qiskit_ibm_runtime.Session instance?",
+        options: [
+          "Session state and the timestamp of the last completed job in the session",
+          "Quantum circuit depth and the PUBs in each job",
+          "Primitive options and quantum circuit depth",
+          "The PUBs in each job and the primitive options"
+        ],
+        answer: 0,
+        explanation: "session.details() reports session-level metadata such as its current state and when its most recent job finished \u2014 not per-circuit details like depth or PUB contents."
+      },
+      {
+        text: "Which of these is a classical data type supported by OpenQASM 3?",
+        options: [
+          "<code>complex</code>",
+          "<code>class</code>",
+          "<code>char</code>",
+          "<code>enum</code>"
+        ],
+        answer: 0,
+        explanation: "OpenQASM 3's classical types include bit, int, uint, float, bool, angle, and complex; class, char, and enum aren't part of the language."
+      },
+      {
+        text: "Which correctly exports a circuit qc to an OpenQASM 3 file stream named qasmprogram?",
+        options: [
+          "<code>qc.to_openqasm3(qasmprogram)</code>",
+          "<code>qiskit.qasm3.dump(qc, qasmprogram)</code>",
+          "<code>qasmprogram.export_to_qasm3(qc)</code>",
+          "<code>qiskit.qasm3.export(qc, qasmprogram)</code>"
+        ],
+        answer: 1,
+        explanation: "qiskit.qasm3.dump(circuit, stream) writes the OpenQASM 3 representation of a circuit to a file-like object."
+      },
+      {
+        text: "Given this EstimatorV2 job, which call retrieves the expectation values from the result?<pre class=\"q-code\">from qiskit_ibm_runtime import EstimatorV2 as Estimator\nestimator = Estimator(mode=backend)\njob = estimator.run([(isa_circuit, observable, parameter_values)])\npub_result = job.result()[0]</pre>",
+        options: [
+          "<code>pub_result.data.counts</code>",
+          "<code>pub_result.data.evs</code>",
+          "<code>pub_result.data.quasi_dists</code>",
+          "<code>pub_result.expectation_values</code>"
+        ],
+        answer: 1,
+        explanation: "EstimatorV2 PubResult objects expose expectation values through the .data.evs field."
+      },
+      {
+        text: "What is SparsePauliOp used for in Qiskit?<pre class=\"q-code\">from qiskit.quantum_info import SparsePauliOp\nhamiltonian = SparsePauliOp.from_list([(&quot;IZ&quot;, 1.0), (&quot;XI&quot;, 0.5)])</pre>",
+        options: [
+          "it defines a sparse matrix used to initialize a qubit's classical state",
+          "it represents a quantum observable as a weighted sum of Pauli operators, typically used with EstimatorV2",
+          "it applies a sequence of Pauli gates to a circuit",
+          "it stores a Sampler measurement result in compressed form"
+        ],
+        answer: 1,
+        explanation: "SparsePauliOp encodes a Hamiltonian/observable as a linear combination of Pauli strings, which is exactly what Estimator primitives expect as input."
+      },
+      {
+        text: "Before passing this observable to EstimatorV2 alongside a transpiled circuit isa_circuit, what must be done to it?<pre class=\"q-code\">from qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\nhamiltonian = SparsePauliOp.from_list([(&quot;IZ&quot;, 1.0), (&quot;XI&quot;, 0.5)])\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa_circuit = pm.run(circuit)</pre>",
+        options: [
+          "convert it to a matrix with hamiltonian.to_matrix()",
+          "transpile it using pm.run(hamiltonian)",
+          "remap it to the circuit's layout with hamiltonian.apply_layout(isa_circuit.layout)",
+          "nothing \u2014 SparsePauliOp objects are backend-agnostic"
+        ],
+        answer: 2,
+        explanation: "Once a circuit has been transpiled to a specific physical layout, its observable needs apply_layout() so the Pauli terms line up with the new qubit indices."
+      },
+      {
+        text: "Which snippet builds a circuit with QuantumRegister/ClassicalRegister, applies H to qubit 0, measures it, and conditionally applies X to qubit 1 if the result is 1?",
+        options: [
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqubits = QuantumRegister(2)\nclbits = ClassicalRegister(2)\ncircuit = QuantumCircuit(qubits, clbits)\n(q0, q1) = qubits\n(c0, c1) = clbits\ncircuit.h(q0)\ncircuit.measure(q0, c0)\nwith circuit.if_test((c0, 1)):\n    circuit.x(q1)\ncircuit.measure(q1, c1)</pre>",
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit\n\ncircuit = QuantumCircuit(2, 2)\ncircuit.h(0)\ncircuit.measure(0, 0)\ncircuit.x(1).c_if(0, 1)\ncircuit.measure(1, 1)</pre>",
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqubits = QuantumRegister(2)\nclbits = ClassicalRegister(2)\ncircuit = QuantumCircuit(qubits, clbits)\ncircuit.h(0)\ncircuit.cx(0, 1)\ncircuit.measure_all()</pre>",
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit\n\ncircuit = QuantumCircuit(2, 2)\ncircuit.h(0)\ncircuit.if_test((0, 1), circuit.x, 1)\ncircuit.measure_all()</pre>"
+        ],
+        answer: 0,
+        explanation: "The if_test() context manager is the modern, register-aware way to express classically-conditioned gates in Qiskit."
+      },
+      {
+        text: "Which snippet correctly uses Statevector to simulate a 2-qubit Bell state and sample counts from it?",
+        options: [
+          "<pre class=\"q-code\">from qiskit.quantum_info import Statevector\n\nstate = Statevector([1/2**0.5, 0, 0, 1/2**0.5])\ncounts = state.sample_counts(shots=1024)</pre>",
+          "<pre class=\"q-code\">from qiskit.quantum_info import Statevector\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector(qc)\ncounts = state.sample_counts(shots=1024)</pre>",
+          "<pre class=\"q-code\">from qiskit.quantum_info import Statevector\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\ncounts = qc.sample_counts(shots=1024)</pre>",
+          "<pre class=\"q-code\">from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\ncounts = StatevectorSampler.counts(qc, shots=1024)</pre>"
+        ],
+        answer: 1,
+        explanation: "Build the circuit, wrap it in a Statevector, then call sample_counts() on that Statevector object \u2014 sample_counts isn't a QuantumCircuit method."
+      },
+      {
+        text: "Which generate_preset_pass_manager optimization level applies no explicit optimization beyond mapping the circuit to the backend?",
+        options: [
+          "<code>optimization_level=0</code>",
+          "<code>optimization_level=1</code>",
+          "<code>optimization_level=2</code>",
+          "<code>optimization_level=3</code>"
+        ],
+        answer: 0,
+        explanation: "Level 0 only does the minimum required layout/routing/translation work with no additional optimization passes."
+      },
+      {
+        text: "For a transpiled ISA circuit tqc, which call gives the final layout as an ordered list of physical qubit indices, one per virtual qubit?",
+        options: [
+          "<code>tqc.layout.initial_layout</code>",
+          "<code>tqc.layout.final_layout</code>",
+          "<code>tqc.layout.final_index_layout()</code>",
+          "<code>tqc.layout.routing_permutation()</code>"
+        ],
+        answer: 2,
+        explanation: "final_index_layout() returns the final virtual-to-physical qubit mapping as a plain list of physical indices."
+      },
+      {
+        text: "How do Batch mode and Session mode differ in Qiskit Runtime?",
+        options: [
+          "Batch mode reserves the system exclusively for the user between jobs; Session mode doesn't",
+          "Session mode groups iterative quantum-classical workloads with a reserved time slot; Batch mode submits multiple independent jobs together without guaranteeing execution order",
+          "Batch mode only works on simulators; Session mode only works on real hardware",
+          "Session and Batch mode are identical \u2014 only the API call differs"
+        ],
+        answer: 1,
+        explanation: "Sessions reserve backend time for a sequence of dependent, iterative calls, while Batch groups independent jobs to run together without that ordering guarantee."
+      },
+      {
+        text: "Which snippet correctly loads a saved QiskitRuntimeService account and retrieves the least-busy real backend?",
+        options: [
+          "<pre class=\"q-code\">from qiskit_ibm_runtime import QiskitRuntimeService\nservice = QiskitRuntimeService()\nbackend = service.least_busy(operational=True, simulator=False)</pre>",
+          "<pre class=\"q-code\">from qiskit_ibm_runtime import QiskitRuntimeService\nservice = QiskitRuntimeService.get_backend(&#x27;least_busy&#x27;)\nbackend = service.run()</pre>",
+          "<pre class=\"q-code\">from qiskit_ibm_runtime import QiskitRuntimeService\nbackend = QiskitRuntimeService.least_busy()</pre>",
+          "<pre class=\"q-code\">from qiskit_ibm_runtime import QiskitRuntimeService\nservice = QiskitRuntimeService(channel=&#x27;ibm_quantum&#x27;)\nbackend = service.backend(&#x27;ibm_least_busy&#x27;)</pre>"
+        ],
+        answer: 0,
+        explanation: "least_busy() is an instance method on a QiskitRuntimeService object, filtered here to exclude simulators and non-operational devices."
+      },
+      {
+        text: "Given this Bell-state SamplerV2 run, what does pub_result.data.meas.get_counts() return?<pre class=\"q-code\">from qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2 as Sampler\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\nbell.measure_all()\n\n# (assume isa_circuit is the transpiled version of bell)\nsampler = Sampler(mode=backend)\nsampler.options.default_shots = 1024\njob = sampler.run([isa_circuit])\npub_result = job.result()[0]\nprint(pub_result.data.meas.get_counts())</pre>",
+        options: [
+          "a single integer representing the total number of shots",
+          "a dictionary mapping each measured bitstring to how many times it occurred, e.g. {'00': 512, '11': 512}",
+          "a list of statevector amplitudes for each basis state",
+          "a float representing the probability of measuring |00\u27e9"
+        ],
+        answer: 1,
+        explanation: "get_counts() on a BitArray-backed data field returns the familiar bitstring \u2192 count dictionary, same shape as classic Sampler/backend results."
+      }
+    ];
+  </script>
+  <script src="quiz.js"></script>
+</body>
+</html>
